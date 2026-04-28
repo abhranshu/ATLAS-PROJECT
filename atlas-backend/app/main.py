@@ -101,14 +101,16 @@ app = FastAPI(
 
 # ─── CORS Middleware ──────────────────────────────────────────────────────────
 # Must be registered BEFORE routers so preflight OPTIONS requests are handled.
+parsed_origins = [origin.strip() for origin in settings.CORS_ORIGINS.split(",") if origin.strip()]
+allow_all_origins = "*" in parsed_origins
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=[
-        settings.FRONTEND_ORIGIN,      # http://localhost:5173 (Vite dev server)
-        "http://localhost:3000",        # Create-React-App fallback
-        "http://127.0.0.1:5173",
-    ],
-    allow_credentials=True,
+    # Browsers block credentials when Access-Control-Allow-Origin is "*".
+    # If wildcard is used, disable credentials automatically.
+    allow_origins=["*"] if allow_all_origins else parsed_origins,
+    allow_origin_regex=settings.CORS_ORIGIN_REGEX,
+    allow_credentials=(settings.CORS_ALLOW_CREDENTIALS and not allow_all_origins),
     allow_methods=["*"],
     allow_headers=["*"],
 )

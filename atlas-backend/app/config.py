@@ -22,7 +22,13 @@ class Settings(BaseSettings):
     # App meta
     APP_ENV: str = "development"
     APP_VERSION: str = "1.0.0"
-    FRONTEND_ORIGIN: str = "http://localhost:5173"
+    # CORS
+    # Use comma-separated origins in production, for example:
+    # CORS_ORIGINS=https://myapp.vercel.app,https://myapp.netlify.app
+    CORS_ORIGINS: str = "http://localhost:5173,http://127.0.0.1:5173"
+    # Optional regex for dynamic preview URLs (e.g. Vercel/Netlify preview deployments)
+    CORS_ORIGIN_REGEX: str | None = None
+    CORS_ALLOW_CREDENTIALS: bool = True
 
 
 # ─── Singleton instance used across the entire app ────────
