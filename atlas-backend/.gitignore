@@ -20,9 +20,6 @@ env/
 # ML model artifacts (large binaries — store in DVC or artifact registry)
 app/ml/*.pkl
 app/ml/*.joblib
-models/
-models/*.pkl
-models/*.joblib
 
 # Testing scripts
 test_ingest.py
