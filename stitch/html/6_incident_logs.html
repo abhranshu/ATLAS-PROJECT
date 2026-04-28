@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Incident Forensic Logs</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@400;500&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#388bff",
+                        "background-light": "#f5f7f8",
+                        "background-dark": "#0f1723",
+                        "text-primary": "#E6EDF3",
+                        "text-metadata": "#8B949E",
+                    },
+                    fontFamily: {
+                        "display": ["Inter", "sans-serif"],
+                        "mono": ["JetBrains Mono", "monospace"]
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                },
+            },
+        }
+    </script>
+<style>
+        .log-row:hover {
+            background-color: rgba(56, 139, 255, 0.05);
+        }
+        .scrollbar-hide::-webkit-scrollbar {
+            display: none;
+        }
+    </style>
+</head>
+<body class="bg-background-light dark:bg-background-dark font-display text-text-primary antialiased">
+<div class="relative flex h-screen w-full flex-col overflow-hidden">
+<header class="flex h-16 items-center justify-between border-b border-slate-800 bg-background-dark px-8">
+<div class="flex items-center gap-6">
+<div class="flex items-center gap-3 text-primary">
+<span class="material-symbols-outlined text-3xl">shield_with_heart</span>
+<h2 class="text-xl font-bold tracking-tight">Sentinel Forensic</h2>
+</div>
+<nav class="ml-10 flex items-center gap-6">
+<a class="text-sm font-medium text-text-metadata hover:text-primary" href="#">Dashboard</a>
+<a class="text-sm font-medium text-primary border-b-2 border-primary py-5" href="#">Incident Logs</a>
+<a class="text-sm font-medium text-text-metadata hover:text-primary" href="#">Network</a>
+<a class="text-sm font-medium text-text-metadata hover:text-primary" href="#">Reports</a>
+</nav>
+</div>
+<div class="flex items-center gap-4">
+<div class="relative">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-text-metadata">search</span>
+<input class="h-9 w-64 rounded bg-slate-800 pl-10 text-sm text-text-primary border-none focus:ring-1 focus:ring-primary" placeholder="Global search..." type="text"/>
+</div>
+<button class="flex h-9 w-9 items-center justify-center rounded bg-slate-800 text-text-metadata hover:text-white">
+<span class="material-symbols-outlined text-xl">notifications</span>
+</button>
+<div class="h-8 w-8 rounded-full bg-primary/20 border border-primary/30 flex items-center justify-center overflow-hidden">
+<img class="h-full w-full object-cover" data-alt="User avatar placeholder" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCJiXUpIcbvtkmollCNUZtR8Eifo-N6Ez9fPcEoP-810wgGv5mPbczJe-Vc8Ycn67DdD_hyVxs6PaV0np1WhENZO3ImdpnzYqob1aO5MV79h_LQzgJOYNIUHDAZgY621QXJU9vIolDeAaKmKqgbUkBRv_8AO2RnPjtRIzwIyXHM_Ny_NovESV0DR-euftMiBrIQeLUzLZGoc2pBvQv_d4oqYbOl25wm5xc44KbkBOz_lCF9D5UOJyuxo5eOiDvMNS4o3jg35X_LQ8iK"/>
+</div>
+</div>
+</header>
+<main class="flex flex-1 overflow-hidden">
+<aside class="w-64 border-r border-slate-800 bg-background-dark p-4 flex flex-col gap-6">
+<div>
+<p class="mb-3 text-[10px] font-bold uppercase tracking-widest text-text-metadata">Views</p>
+<div class="flex flex-col gap-1">
+<button class="flex items-center gap-3 rounded bg-primary/10 px-3 py-2 text-primary">
+<span class="material-symbols-outlined text-lg">list_alt</span>
+<span class="text-sm font-medium">Real-time Stream</span>
+</button>
+<button class="flex items-center gap-3 px-3 py-2 text-text-metadata hover:bg-slate-800 hover:text-white">
+<span class="material-symbols-outlined text-lg">history</span>
+<span class="text-sm font-medium">Archive Explorer</span>
+</button>
+<button class="flex items-center gap-3 px-3 py-2 text-text-metadata hover:bg-slate-800 hover:text-white">
+<span class="material-symbols-outlined text-lg">error</span>
+<span class="text-sm font-medium">Error Aggregator</span>
+</button>
+</div>
+</div>
+<div>
+<p class="mb-3 text-[10px] font-bold uppercase tracking-widest text-text-metadata">Saved Queries</p>
+<div class="flex flex-col gap-1">
+<button class="flex items-center gap-3 px-3 py-2 text-text-metadata hover:text-white">
+<span class="material-symbols-outlined text-lg text-red-500">priority_high</span>
+<span class="text-sm font-medium">Auth Failures</span>
+</button>
+<button class="flex items-center gap-3 px-3 py-2 text-text-metadata hover:text-white">
+<span class="material-symbols-outlined text-lg text-amber-500">database</span>
+<span class="text-sm font-medium">DB Latency Spike</span>
+</button>
+</div>
+</div>
+<div class="mt-auto rounded-lg bg-slate-800/50 p-4 border border-slate-800">
+<p class="text-xs font-medium text-text-primary">Storage usage</p>
+<div class="mt-2 h-1.5 w-full rounded-full bg-slate-700">
+<div class="h-full w-3/4 rounded-full bg-primary"></div>
+</div>
+<p class="mt-2 text-[10px] text-text-metadata">752.4 GB of 1 TB used</p>
+</div>
+</aside>
+<section class="flex flex-1 flex-col overflow-hidden bg-background-dark/50">
+<div class="flex flex-col gap-4 border-b border-slate-800 p-6">
+<div class="flex items-center justify-between">
+<div>
+<h1 class="text-2xl font-bold text-text-primary">Incident Logs</h1>
+<p class="text-sm text-text-metadata">Forensic investigation and system event audit trail</p>
+</div>
+<div class="flex items-center gap-3">
+<button class="flex items-center gap-2 rounded border border-slate-700 px-4 py-2 text-sm font-medium text-text-primary hover:bg-slate-800">
+<span class="material-symbols-outlined text-sm">download</span> Export
+                            </button>
+<button class="flex items-center gap-2 rounded bg-primary px-4 py-2 text-sm font-bold text-white hover:bg-primary/90">
+<span class="material-symbols-outlined text-sm">add</span> New Case
+                            </button>
+</div>
+</div>
+<div class="flex flex-wrap items-center gap-3">
+<div class="flex flex-1 items-center gap-2 rounded border border-slate-700 bg-slate-900/50 px-3 py-1.5">
+<span class="material-symbols-outlined text-text-metadata">search</span>
+<input class="w-full border-none bg-transparent p-0 text-sm text-text-primary placeholder-text-metadata focus:ring-0" placeholder="Search by message, host, or source..." type="text"/>
+<span class="text-[10px] font-mono font-bold text-text-metadata bg-slate-800 px-1 rounded">CMD+K</span>
+</div>
+<div class="flex items-center gap-2">
+<button class="flex items-center gap-2 rounded bg-slate-800 px-3 py-1.5 text-xs font-medium text-text-primary hover:bg-slate-700">
+<span class="material-symbols-outlined text-sm">calendar_month</span> Last 24 Hours
+                                <span class="material-symbols-outlined text-sm">expand_more</span>
+</button>
+<button class="flex items-center gap-2 rounded bg-slate-800 px-3 py-1.5 text-xs font-medium text-text-primary hover:bg-slate-700">
+<span class="material-symbols-outlined text-sm">filter_alt</span> Filters
+                            </button>
+</div>
+</div>
+<div class="flex items-center gap-2 overflow-x-auto scrollbar-hide">
+<span class="text-xs font-bold text-text-metadata mr-2 uppercase tracking-tight">Quick filters:</span>
+<button class="flex shrink-0 items-center gap-1.5 rounded-full border border-red-500/50 bg-red-500/10 px-3 py-1 text-[11px] font-bold text-red-500">
+<span class="size-1.5 rounded-full bg-red-500"></span> Critical (12)
+                        </button>
+<button class="flex shrink-0 items-center gap-1.5 rounded-full border border-amber-500/50 bg-amber-500/10 px-3 py-1 text-[11px] font-bold text-amber-500">
+<span class="size-1.5 rounded-full bg-amber-500"></span> Warning (48)
+                        </button>
+<button class="flex shrink-0 items-center gap-1.5 rounded-full border border-blue-500/50 bg-blue-500/10 px-3 py-1 text-[11px] font-bold text-blue-500">
+<span class="size-1.5 rounded-full bg-blue-500"></span> Info (1.2k)
+                        </button>
+<button class="flex shrink-0 items-center gap-1.5 rounded-full border border-slate-600 bg-slate-800 px-3 py-1 text-[11px] font-bold text-text-metadata">
+                            Host: prod-db-01 <span class="material-symbols-outlined text-[10px]">close</span>
+</button>
+</div>
+</div>
+<div class="flex-1 overflow-auto">
+<table class="w-full border-collapse text-left">
+<thead class="sticky top-0 z-10 bg-background-dark text-[11px] font-bold uppercase tracking-wider text-text-metadata border-b border-slate-800">
+<tr>
+<th class="px-6 py-3 w-48">Timestamp</th>
+<th class="px-4 py-3 w-28">Level</th>
+<th class="px-4 py-3 w-40">Source</th>
+<th class="px-4 py-3">Message</th>
+<th class="px-6 py-3 text-right">Action</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-slate-800/50 font-mono text-[13px]">
+<tr class="log-row group transition-colors">
+<td class="px-6 py-4 whitespace-nowrap text-text-metadata">2023-11-24 14:02:11.452</td>
+<td class="px-4 py-4 whitespace-nowrap">
+<span class="inline-flex items-center rounded bg-red-500/20 px-2 py-0.5 text-[10px] font-bold text-red-500 uppercase">Critical</span>
+</td>
+<td class="px-4 py-4 whitespace-nowrap text-primary">auth-service</td>
+<td class="px-4 py-4 text-text-primary">
+<span class="font-bold">[ERR-AUTH-042]</span> Multiple failed login attempts for user 'admin' from IP 192.168.1.105
+                                </td>
+<td class="px-6 py-4 text-right">
+<button class="text-text-metadata hover:text-white"><span class="material-symbols-outlined">more_horiz</span></button>
+</td>
+</tr>
+<tr class="log-row group transition-colors">
+<td class="px-6 py-4 whitespace-nowrap text-text-metadata">2023-11-24 14:01:58.891</td>
+<td class="px-4 py-4 whitespace-nowrap">
+<span class="inline-flex items-center rounded bg-amber-500/20 px-2 py-0.5 text-[10px] font-bold text-amber-500 uppercase">Warning</span>
+</td>
+<td class="px-4 py-4 whitespace-nowrap text-primary">db-proxy-02</td>
+<td class="px-4 py-4 text-text-primary">
+                                    Connection pool reaching 85% capacity (170/200 active connections)
+                                </td>
+<td class="px-6 py-4 text-right">
+<button class="text-text-metadata hover:text-white"><span class="material-symbols-outlined">more_horiz</span></button>
+</td>
+</tr>
+<tr class="log-row group transition-colors">
+<td class="px-6 py-4 whitespace-nowrap text-text-metadata">2023-11-24 14:01:32.110</td>
+<td class="px-4 py-4 whitespace-nowrap">
+<span class="inline-flex items-center rounded bg-blue-500/20 px-2 py-0.5 text-[10px] font-bold text-blue-500 uppercase">Info</span>
+</td>
+<td class="px-4 py-4 whitespace-nowrap text-primary">gateway-ingress</td>
+<td class="px-4 py-4 text-text-primary">
+                                    GET /api/v1/health-check HTTP/1.1 200 OK - 14ms
+                                </td>
+<td class="px-6 py-4 text-right">
+<button class="text-text-metadata hover:text-white"><span class="material-symbols-outlined">more_horiz</span></button>
+</td>
+</tr>
+<tr class="log-row group transition-colors">
+<td class="px-6 py-4 whitespace-nowrap text-text-metadata">2023-11-24 13:59:45.002</td>
+<td class="px-4 py-4 whitespace-nowrap">
+<span class="inline-flex items-center rounded bg-red-500/20 px-2 py-0.5 text-[10px] font-bold text-red-500 uppercase">Critical</span>
+</td>
+<td class="px-4 py-4 whitespace-nowrap text-primary">kernel-panic</td>
+<td class="px-4 py-4 text-text-primary">
+                                    FATAL: segfault at 0000000000000010 ip 00007f3c4e0b5d90 sp 00007ffca7694f48
+                                </td>
+<td class="px-6 py-4 text-right">
+<button class="text-text-metadata hover:text-white"><span class="material-symbols-outlined">more_horiz</span></button>
+</td>
+</tr>
+<tr class="log-row group transition-colors">
+<td class="px-6 py-4 whitespace-nowrap text-text-metadata">2023-11-24 13:58:12.774</td>
+<td class="px-4 py-4 whitespace-nowrap">
+<span class="inline-flex items-center rounded bg-amber-500/20 px-2 py-0.5 text-[10px] font-bold text-amber-500 uppercase">Warning</span>
+</td>
+<td class="px-4 py-4 whitespace-nowrap text-primary">storage-serv</td>
+<td class="px-4 py-4 text-text-primary">
+                                    Disk I/O wait exceeding 500ms on /dev/nvme0n1p2
+                                </td>
+<td class="px-6 py-4 text-right">
+<button class="text-text-metadata hover:text-white"><span class="material-symbols-outlined">more_horiz</span></button>
+</td>
+</tr>
+<tr class="log-row group transition-colors">
+<td class="px-6 py-4 whitespace-nowrap text-text-metadata">2023-11-24 13:57:44.221</td>
+<td class="px-4 py-4 whitespace-nowrap">
+<span class="inline-flex items-center rounded bg-blue-500/20 px-2 py-0.5 text-[10px] font-bold text-blue-500 uppercase">Info</span>
+</td>
+<td class="px-4 py-4 whitespace-nowrap text-primary">worker-04</td>
+<td class="px-4 py-4 text-text-primary">
+                                    Successfully processed batch job ID: #88392-X in 452s
+                                </td>
+<td class="px-6 py-4 text-right">
+<button class="text-text-metadata hover:text-white"><span class="material-symbols-outlined">more_horiz</span></button>
+</td>
+</tr>
+<tr class="log-row group transition-colors">
+<td class="px-6 py-4 whitespace-nowrap text-text-metadata">2023-11-24 13:56:01.092</td>
+<td class="px-4 py-4 whitespace-nowrap">
+<span class="inline-flex items-center rounded bg-blue-500/20 px-2 py-0.5 text-[10px] font-bold text-blue-500 uppercase">Info</span>
+</td>
+<td class="px-4 py-4 whitespace-nowrap text-primary">config-manager</td>
+<td class="px-4 py-4 text-text-primary">
+                                    Configuration reloaded for environment: 'production'
+                                </td>
+<td class="px-6 py-4 text-right">
+<button class="text-text-metadata hover:text-white"><span class="material-symbols-outlined">more_horiz</span></button>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<footer class="flex items-center justify-between border-t border-slate-800 bg-background-dark/80 px-6 py-3">
+<div class="flex items-center gap-4 text-xs text-text-metadata">
+<span>Showing 1-100 of 12,482 logs</span>
+<div class="h-4 w-[1px] bg-slate-800"></div>
+<span class="flex items-center gap-1"><span class="size-2 rounded-full bg-green-500"></span> Live feed active</span>
+</div>
+<div class="flex items-center gap-2">
+<button class="flex items-center justify-center size-8 rounded border border-slate-700 text-text-metadata disabled:opacity-30" disabled="">
+<span class="material-symbols-outlined text-lg">chevron_left</span>
+</button>
+<button class="flex items-center justify-center size-8 rounded bg-primary text-[11px] font-bold text-white">1</button>
+<button class="flex items-center justify-center size-8 rounded border border-slate-700 text-[11px] font-bold text-text-metadata hover:bg-slate-800 hover:text-white">2</button>
+<button class="flex items-center justify-center size-8 rounded border border-slate-700 text-[11px] font-bold text-text-metadata hover:bg-slate-800 hover:text-white">3</button>
+<button class="flex items-center justify-center size-8 rounded border border-slate-700 text-text-metadata hover:bg-slate-800 hover:text-white">
+<span class="material-symbols-outlined text-lg">chevron_right</span>
+</button>
+</div>
+</footer>
+</section>
+</main>
+</div>
+</body></html>

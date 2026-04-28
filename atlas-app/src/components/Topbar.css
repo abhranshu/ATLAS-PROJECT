@@ -1,0 +1,127 @@
+.topbar-container {
+  display: flex;
+  flex-direction: column;
+  background: #0B0F19;
+  z-index: 10;
+}
+
+.topbar {
+  height: 64px;
+  border-bottom: 1px solid rgba(0, 229, 255, 0.2);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 24px;
+}
+
+.topbar-left {
+  display: flex;
+  align-items: center;
+}
+
+.topbar-title-group {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.topbar-title {
+  color: #fff;
+  font-size: 22px;
+  font-weight: 700;
+  margin: 0;
+  letter-spacing: 0.1em;
+  font-family: 'Share Tech Mono', monospace;
+}
+
+.topbar-subtitle {
+  color: #8B949E;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.topbar-right {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.topbar-dropdown {
+  background: #111520;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: #E6EDF3;
+  padding: 8px 32px 8px 12px;
+  border-radius: 4px;
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 13px;
+  outline: none;
+  cursor: pointer;
+}
+
+.btn-run-cycle {
+  background: #0088ff;
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 13px;
+  font-weight: 700;
+  border-radius: 4px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  transition: background 0.2s;
+  box-shadow: 0 0 10px rgba(0, 136, 255, 0.4);
+}
+
+.btn-run-cycle:hover {
+  background: #0099ff;
+  box-shadow: 0 0 15px rgba(0, 153, 255, 0.6);
+}
+
+.btn-icon {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: #8B949E;
+  width: 34px;
+  height: 34px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.btn-refresh:hover {
+  color: #00ff00;
+  border-color: rgba(0, 255, 0, 0.3);
+  background: rgba(0, 255, 0, 0.05);
+}
+
+.btn-power:hover {
+  color: #ff0000;
+  border-color: rgba(255, 0, 0, 0.3);
+  background: rgba(255, 0, 0, 0.05);
+}
+
+.topbar-subbanner {
+  height: 28px;
+  background: #071224;
+  border-bottom: 1px solid rgba(0, 229, 255, 0.3);
+  display: flex;
+  align-items: center;
+  padding: 0 24px;
+  gap: 16px;
+  color: #00E5FF;
+  font-size: 11px;
+  font-family: 'Share Tech Mono', monospace;
+  letter-spacing: 0.1em;
+}
+
+.topbar-subbanner .separator {
+  color: rgba(0, 229, 255, 0.4);
+  font-size: 10px;
+}

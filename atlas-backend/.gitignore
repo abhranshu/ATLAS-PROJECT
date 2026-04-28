@@ -1,0 +1,47 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+.Python
+*.pyc
+.cache/
+
+# Virtualenv
+venv/
+.venv/
+env/
+# Environment secrets (keep template .env but not overrides)
+.env
+.env.local
+.env.production
+.env.staging
+
+# ML model artifacts (large binaries — store in DVC or artifact registry)
+app/ml/*.pkl
+app/ml/*.joblib
+models/
+models/*.pkl
+models/*.joblib
+
+# Testing scripts
+test_ingest.py
+test_internal.py
+
+# IDE
+.vscode/
+.idea/
+*.swp
+
+# Test / Coverage
+.pytest_cache/
+htmlcov/
+.coverage
+coverage.xml
+
+# Alembic
+alembic/versions/__pycache__/
+
+# OS
+.DS_Store
+Thumbs.db

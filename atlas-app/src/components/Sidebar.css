@@ -1,0 +1,239 @@
+.sidebar {
+  width: 250px;
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  border-right: 1px solid rgba(0, 229, 255, 0.15);
+  background-color: #0B0F19;
+  height: 100vh;
+  position: sticky;
+  top: 0;
+  font-family: 'Share Tech Mono', monospace;
+}
+
+.sidebar-header {
+  padding: 20px 20px 10px 20px;
+}
+
+.sidebar-logo {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.sidebar-logo-icon {
+  width: 32px;
+  height: 32px;
+  background: #E85D04;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 0 10px rgba(232, 93, 4, 0.5);
+}
+
+.sidebar-logo-text {
+  display: flex;
+  flex-direction: column;
+}
+
+.sidebar-title {
+  color: #00E5FF;
+  font-size: 16px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  margin: 0;
+}
+
+.sidebar-subtitle {
+  color: #8B949E;
+  font-size: 9px;
+  margin: 0;
+  letter-spacing: 0.05em;
+}
+
+.sidebar-status-active {
+  color: #00FF00;
+  font-size: 11px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  letter-spacing: 0.1em;
+}
+
+.dot-green {
+  width: 6px;
+  height: 6px;
+  background: #00FF00;
+  border-radius: 50%;
+  box-shadow: 0 0 8px #00FF00;
+}
+
+.sidebar-section-title {
+  color: #4A5568;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.15em;
+  padding: 10px 20px;
+  margin-top: 10px;
+}
+
+.mt-4 { margin-top: 16px; }
+
+.sidebar-nav {
+  display: flex;
+  flex-direction: column;
+  padding: 0 12px;
+}
+
+.sidebar-nav-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 16px;
+  color: #8B949E;
+  text-decoration: none;
+  font-size: 13px;
+  border-radius: 4px;
+  border-left: 2px solid transparent;
+  transition: all 0.2s;
+}
+
+.nav-item-left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.nav-icon {
+  color: #4A5568;
+}
+
+.sidebar-nav-item:hover {
+  background: rgba(255, 255, 255, 0.05);
+  color: #fff;
+}
+
+.sidebar-nav-item:hover .nav-icon {
+  color: #00E5FF;
+}
+
+.sidebar-nav-item--active {
+  background: rgba(0, 136, 255, 0.1);
+  color: #00E5FF;
+  border-left: 2px solid #00E5FF;
+}
+
+.sidebar-nav-item--active .nav-icon {
+  color: #00E5FF;
+}
+
+.nav-badge {
+  background: #E3A008;
+  color: #000;
+  font-size: 10px;
+  font-weight: 700;
+  padding: 2px 6px;
+  border-radius: 10px;
+}
+
+.telemetry-list {
+  padding: 0 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.telemetry-row {
+  display: flex;
+  justify-content: space-between;
+  font-size: 12px;
+}
+
+.tel-label { color: #8B949E; }
+.tel-val { font-weight: 700; color: #E6EDF3; }
+.text-blue { color: #00E5FF; }
+.text-green { color: #00FF00; }
+.text-orange { color: #FFA500; }
+
+.threat-level-box {
+  margin: 20px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.03);
+  border-radius: 4px;
+  padding: 12px;
+  text-align: center;
+}
+
+.threat-title {
+  color: #4A5568;
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  margin-bottom: 6px;
+}
+
+.threat-status {
+  color: #FFA500;
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-shadow: 0 0 10px rgba(255, 165, 0, 0.3);
+}
+
+.sidebar-footer {
+  margin-top: auto;
+  padding: 20px;
+  border-top: 1px solid rgba(0, 229, 255, 0.1);
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.supabase-status {
+  color: #00FF00;
+  font-size: 10px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  letter-spacing: 0.1em;
+}
+
+.operator-profile {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.op-avatar {
+  width: 24px;
+  height: 24px;
+  background: #3B007F;
+  border-radius: 50%;
+  position: relative;
+  overflow: hidden;
+}
+
+.op-avatar::after {
+  content: '';
+  position: absolute;
+  bottom: -4px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 16px;
+  height: 12px;
+  background: rgba(255,255,255,0.4);
+  border-radius: 50% 50% 0 0;
+}
+
+.op-name {
+  color: #E6EDF3;
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.op-clearance {
+  color: #00E5FF;
+  font-size: 9px;
+  letter-spacing: 0.05em;
+}

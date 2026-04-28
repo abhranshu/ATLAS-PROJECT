@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#388bff",
+                        "background-light": "#f5f7f8",
+                        "background-dark": "#0f1723",
+                    },
+                    fontFamily: {
+                        "display": ["Inter", "sans-serif"]
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                },
+            },
+        }
+    </script>
+<style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        .terminal-grid {
+            background-image: radial-gradient(circle, rgba(56, 139, 255, 0.05) 1px, transparent 1px);
+            background-size: 20px 20px;
+        }
+    </style>
+</head>
+<body class="bg-background-light dark:bg-background-dark text-slate-900 dark:text-slate-100 font-display min-h-screen">
+<div class="flex h-screen overflow-hidden">
+<!-- Sidebar Navigation -->
+<aside class="w-64 border-r border-slate-200 dark:border-slate-800 flex flex-col bg-white dark:bg-background-dark">
+<div class="p-6 flex items-center gap-3">
+<div class="size-8 bg-primary rounded flex items-center justify-center">
+<span class="material-symbols-outlined text-white">shield_with_heart</span>
+</div>
+<h1 class="font-black text-sm tracking-tighter uppercase text-slate-900 dark:text-slate-100">Sentinel-X</h1>
+</div>
+<nav class="flex-1 px-4 space-y-2 mt-4">
+<div class="text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-widest px-2 mb-2">Operations</div>
+<a class="flex items-center gap-3 px-3 py-2 rounded bg-primary/10 text-primary border-l-2 border-primary" href="#">
+<span class="material-symbols-outlined text-[20px]">dashboard</span>
+<span class="text-sm font-medium leading-normal">Fleet Overview</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors" href="#">
+<span class="material-symbols-outlined text-[20px]">analytics</span>
+<span class="text-sm font-medium leading-normal">Risk Analysis</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors" href="#">
+<span class="material-symbols-outlined text-[20px]">hub</span>
+<span class="text-sm font-medium leading-normal">Anomalous Clusters</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors" href="#">
+<span class="material-symbols-outlined text-[20px]">database</span>
+<span class="text-sm font-medium leading-normal">Raw Logs</span>
+</a>
+<div class="pt-6 text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-widest px-2 mb-2">Systems</div>
+<a class="flex items-center gap-3 px-3 py-2 text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors" href="#">
+<span class="material-symbols-outlined text-[20px]">settings</span>
+<span class="text-sm font-medium leading-normal">Configuration</span>
+</a>
+</nav>
+<div class="p-4 border-t border-slate-200 dark:border-slate-800">
+<div class="flex items-center gap-3 p-2">
+<div class="w-8 h-8 rounded-full bg-slate-200 dark:bg-slate-700 overflow-hidden">
+<img alt="Operator avatar" data-alt="User avatar for dashboard operator" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDdnIIMyNREez1ODkFc5YNPQWovyLI0epqOqRg8TAxMjtY29spWyUuuieySLvBk3FYYDLoEsciiipW0gNcjmyzrnBIobSr8AiVhs-eGYAZwpO0MQnD_I9i6m5GjqkveA6Kbb-jrgKnK3Lz43-31kCVNJG6i0jVxdQV4ow7zEPeCYb6xj_VpyphjDVxW-f4uOSkY35_V1ealJUyqrcnExJiBoa39Xnkg0YuG6VyTh-UqUm5IboOh-c1KJjBBu0k4TOYX4iJdxSgunURj"/>
+</div>
+<div class="flex flex-col">
+<span class="text-xs font-bold uppercase truncate">Op_01_Admin</span>
+<span class="text-[10px] text-slate-500">Fleet Command</span>
+</div>
+</div>
+</div>
+</aside>
+<!-- Main Content -->
+<main class="flex-1 flex flex-col overflow-y-auto terminal-grid">
+<!-- Top Header -->
+<header class="h-16 border-b border-slate-200 dark:border-slate-800 bg-white/80 dark:bg-background-dark/80 backdrop-blur-md px-8 flex items-center justify-between sticky top-0 z-10">
+<div class="flex items-center gap-4">
+<span class="text-[10px] font-mono font-bold px-2 py-0.5 rounded bg-emerald-500/10 text-emerald-500 border border-emerald-500/20">SYSTEM_STABLE</span>
+<div class="h-4 w-[1px] bg-slate-300 dark:bg-slate-700"></div>
+<span class="text-xs font-mono text-slate-500">SESSION_ID: 8842-XF-01</span>
+</div>
+<div class="flex items-center gap-4">
+<div class="relative">
+<span class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+<span class="material-symbols-outlined text-slate-400 text-sm">search</span>
+</span>
+<input class="bg-slate-100 dark:bg-slate-800 border-none rounded text-xs px-10 py-2 focus:ring-1 focus:ring-primary w-64" placeholder="Search fleet entities..." type="text"/>
+</div>
+<button class="flex items-center justify-center p-2 text-slate-500 hover:text-primary transition-colors">
+<span class="material-symbols-outlined">notifications</span>
+</button>
+<button class="bg-primary hover:bg-primary/90 text-white text-[10px] font-bold px-4 py-2 rounded transition-all uppercase tracking-wider">
+                        Generate Report
+                    </button>
+</div>
+</header>
+<!-- Dashboard Content -->
+<div class="p-8 max-w-7xl mx-auto w-full space-y-6">
+<!-- Hero Header -->
+<div class="flex flex-col md:flex-row justify-between items-end gap-4 border-b border-slate-200 dark:border-slate-800 pb-6">
+<div>
+<h2 class="text-3xl font-black tracking-tight text-slate-900 dark:text-slate-100 uppercase italic">Fleet-Wide Trust Analysis</h2>
+<p class="text-slate-500 dark:text-slate-400 text-sm mt-1">Real-time heuristic evaluation of global entity clusters and risk metadata.</p>
+</div>
+<div class="flex gap-4">
+<div class="text-right">
+<div class="text-[10px] font-bold text-slate-500 uppercase">Current Fleet Score</div>
+<div class="text-3xl font-black text-primary">82.4</div>
+</div>
+<div class="text-right">
+<div class="text-[10px] font-bold text-slate-500 uppercase">Critical Risks</div>
+<div class="text-3xl font-black text-red-500">14</div>
+</div>
+</div>
+</div>
+<!-- Stats Grid -->
+<div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+<div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-4 rounded shadow-sm">
+<div class="flex justify-between items-start">
+<span class="text-[10px] font-bold uppercase text-slate-500">Total Nodes</span>
+<span class="material-symbols-outlined text-primary text-lg">router</span>
+</div>
+<div class="mt-2 flex items-baseline gap-2">
+<span class="text-2xl font-black">1.2M</span>
+<span class="text-[10px] text-emerald-500 font-bold">+0.02%</span>
+</div>
+</div>
+<div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-4 rounded shadow-sm">
+<div class="flex justify-between items-start">
+<span class="text-[10px] font-bold uppercase text-slate-500">Avg Response Time</span>
+<span class="material-symbols-outlined text-primary text-lg">timer</span>
+</div>
+<div class="mt-2 flex items-baseline gap-2">
+<span class="text-2xl font-black">24ms</span>
+<span class="text-[10px] text-red-500 font-bold">+4ms</span>
+</div>
+</div>
+<div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-4 rounded shadow-sm">
+<div class="flex justify-between items-start">
+<span class="text-[10px] font-bold uppercase text-slate-500">Anomaly Index</span>
+<span class="material-symbols-outlined text-primary text-lg">warning</span>
+</div>
+<div class="mt-2 flex items-baseline gap-2">
+<span class="text-2xl font-black">4.2%</span>
+<span class="text-[10px] text-emerald-500 font-bold">-1.1%</span>
+</div>
+</div>
+<div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-4 rounded shadow-sm">
+<div class="flex justify-between items-start">
+<span class="text-[10px] font-bold uppercase text-slate-500">Trend Confidence</span>
+<span class="material-symbols-outlined text-primary text-lg">auto_graph</span>
+</div>
+<div class="mt-2 flex items-baseline gap-2">
+<span class="text-2xl font-black">94.8%</span>
+<span class="text-[10px] text-slate-400 font-bold">STABLE</span>
+</div>
+</div>
+</div>
+<!-- Main Analytics Section -->
+<div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+<!-- Trust Score Distribution Histogram -->
+<div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-6 rounded flex flex-col gap-4">
+<div class="flex justify-between items-center">
+<h3 class="text-xs font-black uppercase tracking-widest text-slate-500 flex items-center gap-2">
+<span class="material-symbols-outlined text-sm">bar_chart</span>
+                                Trust Score Distribution
+                            </h3>
+<button class="material-symbols-outlined text-slate-400 text-sm">more_horiz</button>
+</div>
+<div class="flex-1 flex flex-col justify-end min-h-[240px]">
+<div class="grid grid-cols-10 gap-2 items-end h-full px-2">
+<div class="bg-primary/20 hover:bg-primary/40 transition-colors h-[15%] rounded-t-sm relative group">
+<div class="absolute -top-6 left-1/2 -translate-x-1/2 bg-slate-800 text-white text-[8px] px-1 rounded opacity-0 group-hover:opacity-100">4.2k</div>
+</div>
+<div class="bg-primary/20 hover:bg-primary/40 transition-colors h-[25%] rounded-t-sm"></div>
+<div class="bg-primary/20 hover:bg-primary/40 transition-colors h-[40%] rounded-t-sm"></div>
+<div class="bg-primary/40 hover:bg-primary/60 transition-colors h-[65%] rounded-t-sm"></div>
+<div class="bg-primary/60 hover:bg-primary/80 transition-colors h-[85%] rounded-t-sm"></div>
+<div class="bg-primary hover:bg-primary/90 transition-colors h-[95%] rounded-t-sm"></div>
+<div class="bg-primary/80 hover:bg-primary/90 transition-colors h-[70%] rounded-t-sm"></div>
+<div class="bg-primary/60 hover:bg-primary/80 transition-colors h-[45%] rounded-t-sm"></div>
+<div class="bg-primary/40 hover:bg-primary/60 transition-colors h-[25%] rounded-t-sm"></div>
+<div class="bg-primary/20 hover:bg-primary/40 transition-colors h-[10%] rounded-t-sm"></div>
+</div>
+<div class="grid grid-cols-10 gap-2 mt-2 px-2">
+<span class="text-[8px] font-mono text-center text-slate-500">0</span>
+<span class="text-[8px] font-mono text-center text-slate-500">10</span>
+<span class="text-[8px] font-mono text-center text-slate-500">20</span>
+<span class="text-[8px] font-mono text-center text-slate-500">30</span>
+<span class="text-[8px] font-mono text-center text-slate-500">40</span>
+<span class="text-[8px] font-mono text-center text-slate-500">50</span>
+<span class="text-[8px] font-mono text-center text-slate-500">60</span>
+<span class="text-[8px] font-mono text-center text-slate-500">70</span>
+<span class="text-[8px] font-mono text-center text-slate-500">80</span>
+<span class="text-[8px] font-mono text-center text-slate-500">90</span>
+</div>
+</div>
+<div class="border-t border-slate-100 dark:border-slate-800 pt-4 flex justify-between">
+<div class="flex gap-4">
+<div class="text-[10px]"><span class="font-bold">MEAN:</span> <span class="text-slate-500">72.4</span></div>
+<div class="text-[10px]"><span class="font-bold">STD_DEV:</span> <span class="text-slate-500">8.1</span></div>
+</div>
+<div class="text-[10px] font-bold text-primary">RECALCULATING...</div>
+</div>
+</div>
+<!-- Top Risk Factors (SHAP Summary) -->
+<div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-6 rounded flex flex-col gap-4">
+<div class="flex justify-between items-center">
+<h3 class="text-xs font-black uppercase tracking-widest text-slate-500 flex items-center gap-2">
+<span class="material-symbols-outlined text-sm">monitoring</span>
+                                SHAP Summary (Risk Factors)
+                            </h3>
+<span class="text-[10px] font-bold text-slate-400">IMPACT ON TRUST</span>
+</div>
+<div class="space-y-5 py-2">
+<div class="space-y-1">
+<div class="flex justify-between text-[10px] font-mono uppercase">
+<span>Signal Latency</span>
+<span class="text-red-500 font-bold">+12.4% Risk</span>
+</div>
+<div class="h-1.5 bg-slate-100 dark:bg-slate-800 rounded-full overflow-hidden">
+<div class="h-full bg-red-500 w-[78%]"></div>
+</div>
+</div>
+<div class="space-y-1">
+<div class="flex justify-between text-[10px] font-mono uppercase">
+<span>Encryption Drift</span>
+<span class="text-orange-500 font-bold">+8.1% Risk</span>
+</div>
+<div class="h-1.5 bg-slate-100 dark:bg-slate-800 rounded-full overflow-hidden">
+<div class="h-full bg-orange-500 w-[54%]"></div>
+</div>
+</div>
+<div class="space-y-1">
+<div class="flex justify-between text-[10px] font-mono uppercase">
+<span>Metadata Entropy</span>
+<span class="text-orange-400 font-bold">+5.4% Risk</span>
+</div>
+<div class="h-1.5 bg-slate-100 dark:bg-slate-800 rounded-full overflow-hidden">
+<div class="h-full bg-orange-400 w-[32%]"></div>
+</div>
+</div>
+<div class="space-y-1">
+<div class="flex justify-between text-[10px] font-mono uppercase">
+<span>Handshake Reliability</span>
+<span class="text-emerald-500 font-bold">-14.2% Risk</span>
+</div>
+<div class="h-1.5 bg-slate-100 dark:bg-slate-800 rounded-full overflow-hidden">
+<div class="h-full bg-emerald-500 w-[22%]"></div>
+</div>
+</div>
+</div>
+<div class="mt-auto text-[10px] text-slate-500 italic bg-slate-50 dark:bg-slate-800/50 p-2 border-l-2 border-slate-300 dark:border-slate-700">
+                            SHAP values indicate that signal latency is currently the primary driver of distrust across the analyzed fleet.
+                        </div>
+</div>
+</div>
+<!-- Bottom Section: Trends and Clusters -->
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+<!-- Historical Trust Trend -->
+<div class="lg:col-span-2 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-6 rounded flex flex-col gap-4">
+<div class="flex justify-between items-center">
+<h3 class="text-xs font-black uppercase tracking-widest text-slate-500 flex items-center gap-2">
+<span class="material-symbols-outlined text-sm">show_chart</span>
+                                Historical Trust Trend
+                            </h3>
+<div class="flex gap-2">
+<button class="px-2 py-1 text-[8px] font-bold bg-slate-100 dark:bg-slate-800 rounded">24H</button>
+<button class="px-2 py-1 text-[8px] font-bold bg-primary text-white rounded">7D</button>
+<button class="px-2 py-1 text-[8px] font-bold bg-slate-100 dark:bg-slate-800 rounded">30D</button>
+</div>
+</div>
+<div class="flex-1 min-h-[160px] relative mt-4">
+<svg class="w-full h-full" preserveaspectratio="none" viewbox="0 0 1000 200">
+<defs>
+<lineargradient id="lineGrad" x1="0%" x2="0%" y1="0%" y2="100%">
+<stop offset="0%" style="stop-color:rgba(56, 139, 255, 0.3)"></stop>
+<stop offset="100%" style="stop-color:rgba(56, 139, 255, 0)"></stop>
+</lineargradient>
+</defs>
+<path d="M0,150 Q50,140 100,160 T200,120 T300,130 T400,80 T500,100 T600,60 T700,90 T800,110 T900,40 T1000,70 L1000,200 L0,200 Z" fill="url(#lineGrad)"></path>
+<path d="M0,150 Q50,140 100,160 T200,120 T300,130 T400,80 T500,100 T600,60 T700,90 T800,110 T900,40 T1000,70" fill="none" stroke="#388bff" stroke-width="2"></path>
+</svg>
+<!-- Grid Overlay -->
+<div class="absolute inset-0 grid grid-cols-4 grid-rows-4 pointer-events-none opacity-10">
+<div class="border-r border-b border-slate-400"></div>
+<div class="border-r border-b border-slate-400"></div>
+<div class="border-r border-b border-slate-400"></div>
+<div class="border-b border-slate-400"></div>
+<div class="border-r border-b border-slate-400"></div>
+<div class="border-r border-b border-slate-400"></div>
+<div class="border-r border-b border-slate-400"></div>
+<div class="border-b border-slate-400"></div>
+<div class="border-r border-b border-slate-400"></div>
+<div class="border-r border-b border-slate-400"></div>
+<div class="border-r border-b border-slate-400"></div>
+<div class="border-b border-slate-400"></div>
+</div>
+</div>
+<div class="flex justify-between text-[10px] font-mono text-slate-500 uppercase">
+<span>2024-05-01 00:00</span>
+<span>2024-05-04 12:00</span>
+<span>PRESENT_TIME</span>
+</div>
+</div>
+<!-- Anomalous Clusters -->
+<div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-6 rounded flex flex-col gap-4">
+<div class="flex justify-between items-center">
+<h3 class="text-xs font-black uppercase tracking-widest text-slate-500 flex items-center gap-2">
+<span class="material-symbols-outlined text-sm text-red-500">warning</span>
+                                Anomalous Clusters
+                            </h3>
+<span class="text-[8px] bg-red-500/10 text-red-500 font-bold px-1 rounded border border-red-500/20 uppercase">Critical</span>
+</div>
+<div class="space-y-3 flex-1 overflow-y-auto max-h-[220px]">
+<!-- Cluster Item -->
+<div class="p-3 bg-slate-50 dark:bg-slate-800/50 border border-slate-100 dark:border-slate-800 rounded group hover:border-primary transition-all cursor-pointer">
+<div class="flex justify-between items-start mb-2">
+<span class="text-[10px] font-bold uppercase truncate max-w-[120px]">CLUSTER_SIGMA_09</span>
+<span class="text-[9px] font-mono text-red-500">TRUST: 14%</span>
+</div>
+<div class="flex items-center gap-2 text-[9px] text-slate-500 mb-2">
+<span class="material-symbols-outlined text-[14px]">location_on</span>
+<span>North America (AWS-East-1)</span>
+</div>
+<div class="flex flex-wrap gap-1">
+<span class="px-1.5 py-0.5 bg-slate-200 dark:bg-slate-700 text-[8px] rounded uppercase">Packet_Loss</span>
+<span class="px-1.5 py-0.5 bg-slate-200 dark:bg-slate-700 text-[8px] rounded uppercase">IP_Drift</span>
+</div>
+</div>
+<!-- Cluster Item -->
+<div class="p-3 bg-slate-50 dark:bg-slate-800/50 border border-slate-100 dark:border-slate-800 rounded group hover:border-primary transition-all cursor-pointer">
+<div class="flex justify-between items-start mb-2">
+<span class="text-[10px] font-bold uppercase truncate max-w-[120px]">CLUSTER_OMEGA_42</span>
+<span class="text-[9px] font-mono text-orange-500">TRUST: 41%</span>
+</div>
+<div class="flex items-center gap-2 text-[9px] text-slate-500 mb-2">
+<span class="material-symbols-outlined text-[14px]">location_on</span>
+<span>EU (GCP-Frankfurt)</span>
+</div>
+<div class="flex flex-wrap gap-1">
+<span class="px-1.5 py-0.5 bg-slate-200 dark:bg-slate-700 text-[8px] rounded uppercase">Auth_Fail</span>
+</div>
+</div>
+<!-- Cluster Item -->
+<div class="p-3 bg-slate-50 dark:bg-slate-800/50 border border-slate-100 dark:border-slate-800 rounded group hover:border-primary transition-all cursor-pointer">
+<div class="flex justify-between items-start mb-2">
+<span class="text-[10px] font-bold uppercase truncate max-w-[120px]">CLUSTER_RHO_01</span>
+<span class="text-[9px] font-mono text-red-500">TRUST: 08%</span>
+</div>
+<div class="flex items-center gap-2 text-[9px] text-slate-500 mb-2">
+<span class="material-symbols-outlined text-[14px]">location_on</span>
+<span>Asia (Azure-Tokyo)</span>
+</div>
+<div class="flex flex-wrap gap-1">
+<span class="px-1.5 py-0.5 bg-slate-200 dark:bg-slate-700 text-[8px] rounded uppercase">DDoS_Pattern</span>
+</div>
+</div>
+</div>
+<button class="w-full py-2 text-[10px] font-bold bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors uppercase tracking-widest text-slate-600 dark:text-slate-400 rounded mt-2">
+                            View All Anomalies
+                        </button>
+</div>
+</div>
+</div>
+<!-- Footer Stats Banner -->
+<footer class="mt-auto border-t border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900/50 px-8 py-3 flex items-center justify-between text-[10px] font-mono text-slate-500">
+<div class="flex gap-6">
+<div class="flex items-center gap-2">
+<span class="size-2 rounded-full bg-emerald-500 animate-pulse"></span>
+<span>LIVE_STREAM_ACTIVE</span>
+</div>
+<div>DATA_SOURCE: GLOBAL_TRACER_BETA</div>
+<div>UPTIME: 14D 02H 11M</div>
+</div>
+<div class="flex gap-4">
+<span>SENTINEL-X CORE V4.2.0-STABLE</span>
+<span class="text-primary font-bold cursor-pointer hover:underline">SYS_DOCS</span>
+</div>
+</footer>
+</main>
+</div>
+</body></html>

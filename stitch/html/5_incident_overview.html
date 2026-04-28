@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Incident Management Dashboard</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#388bff",
+                        "background-light": "#f5f7f8",
+                        "background-dark": "#0f1723",
+                    },
+                    fontFamily: {
+                        "display": ["Inter"]
+                    },
+                    borderRadius: {"DEFAULT": "0.125rem", "lg": "0.25rem", "xl": "0.5rem", "full": "0.75rem"},
+                },
+            },
+        }
+    </script>
+<style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+    </style>
+</head>
+<body class="bg-background-light dark:bg-background-dark text-slate-900 dark:text-slate-100 font-display">
+<div class="relative flex h-auto min-h-screen w-full flex-col overflow-x-hidden">
+<!-- Top Navigation Bar -->
+<header class="flex items-center justify-between whitespace-nowrap border-b border-solid border-slate-200 dark:border-slate-800 px-6 lg:px-10 py-3 bg-white dark:bg-background-dark sticky top-0 z-50">
+<div class="flex items-center gap-8">
+<div class="flex items-center gap-3 text-primary">
+<span class="material-symbols-outlined text-3xl">shield_with_heart</span>
+<h2 class="text-slate-900 dark:text-white text-lg font-bold leading-tight tracking-[-0.015em]">SentryOps</h2>
+</div>
+<label class="hidden md:flex flex-col min-w-40 h-10 max-w-64">
+<div class="flex w-full flex-1 items-stretch rounded h-full overflow-hidden">
+<div class="text-slate-400 flex border-none bg-slate-100 dark:bg-slate-800 items-center justify-center pl-4">
+<span class="material-symbols-outlined text-xl">search</span>
+</div>
+<input class="form-input flex w-full min-w-0 flex-1 border-none bg-slate-100 dark:bg-slate-800 text-slate-900 dark:text-white focus:ring-0 placeholder:text-slate-500 px-4 text-sm font-normal" placeholder="Search incidents..." value=""/>
+</div>
+</label>
+</div>
+<div class="flex flex-1 justify-end gap-6 items-center">
+<nav class="hidden xl:flex items-center gap-8">
+<a class="text-primary text-sm font-semibold leading-normal border-b-2 border-primary pb-1" href="#">Dashboard</a>
+<a class="text-slate-600 dark:text-slate-400 hover:text-primary dark:hover:text-primary text-sm font-medium leading-normal transition-colors" href="#">Incidents</a>
+<a class="text-slate-600 dark:text-slate-400 hover:text-primary dark:hover:text-primary text-sm font-medium leading-normal transition-colors" href="#">Hotspots</a>
+<a class="text-slate-600 dark:text-slate-400 hover:text-primary dark:hover:text-primary text-sm font-medium leading-normal transition-colors" href="#">Reporting</a>
+</nav>
+<div class="flex gap-3">
+<button class="flex items-center justify-center rounded h-10 w-10 bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors">
+<span class="material-symbols-outlined">notifications</span>
+</button>
+<button class="flex items-center justify-center rounded h-10 w-10 bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors">
+<span class="material-symbols-outlined">settings</span>
+</button>
+<div class="h-10 w-10 rounded-full bg-primary/20 flex items-center justify-center border border-primary/30">
+<span class="material-symbols-outlined text-primary">account_circle</span>
+</div>
+</div>
+</div>
+</header>
+<div class="flex flex-1 flex-col lg:flex-row">
+<!-- Sidebar -->
+<aside class="w-full lg:w-64 border-r border-slate-200 dark:border-slate-800 p-4 space-y-6 bg-white dark:bg-background-dark">
+<div class="flex flex-col gap-2">
+<div class="flex items-center gap-3 px-3 py-2 rounded-lg bg-primary/10 text-primary">
+<span class="material-symbols-outlined">dashboard</span>
+<p class="text-sm font-semibold">Overview</p>
+</div>
+<div class="flex items-center gap-3 px-3 py-2 rounded-lg text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors cursor-pointer">
+<span class="material-symbols-outlined">error</span>
+<p class="text-sm font-medium">All Incidents</p>
+<span class="ml-auto bg-slate-200 dark:bg-slate-700 text-xs px-2 py-0.5 rounded-full">170</span>
+</div>
+<div class="flex items-center gap-3 px-3 py-2 rounded-lg text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors cursor-pointer">
+<span class="material-symbols-outlined">dns</span>
+<p class="text-sm font-medium">Infrastructure</p>
+</div>
+<div class="flex items-center gap-3 px-3 py-2 rounded-lg text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors cursor-pointer">
+<span class="material-symbols-outlined">security</span>
+<p class="text-sm font-medium">Security Alerts</p>
+</div>
+</div>
+<div class="pt-4 border-t border-slate-200 dark:border-slate-800">
+<p class="px-3 text-xs font-bold text-slate-400 uppercase tracking-widest mb-2">Systems Health</p>
+<div class="space-y-3 px-3">
+<div class="flex justify-between items-center text-xs">
+<span class="text-slate-500">API Gateway</span>
+<span class="h-2 w-2 rounded-full bg-emerald-500"></span>
+</div>
+<div class="flex justify-between items-center text-xs">
+<span class="text-slate-500">Database Cluster</span>
+<span class="h-2 w-2 rounded-full bg-emerald-500"></span>
+</div>
+<div class="flex justify-between items-center text-xs">
+<span class="text-slate-500">Auth Service</span>
+<span class="h-2 w-2 rounded-full bg-amber-500"></span>
+</div>
+</div>
+</div>
+</aside>
+<!-- Main Content -->
+<main class="flex-1 p-6 space-y-8 max-w-7xl mx-auto w-full">
+<!-- Header Section -->
+<div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+<div>
+<h1 class="text-3xl font-black text-slate-900 dark:text-white tracking-tight">Incident Overview</h1>
+<p class="text-slate-500 dark:text-slate-400 mt-1">Real-time system health monitoring and resolution analytics.</p>
+</div>
+<div class="flex gap-3">
+<button class="flex items-center gap-2 px-4 py-2 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-sm font-bold text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors">
+<span class="material-symbols-outlined text-lg">download</span>
+                        Export
+                    </button>
+<button class="flex items-center gap-2 px-6 py-2 rounded-lg bg-primary text-white text-sm font-bold hover:bg-primary/90 transition-colors shadow-lg shadow-primary/20">
+<span class="material-symbols-outlined text-lg">add</span>
+                        New Incident
+                    </button>
+</div>
+</div>
+<!-- Severity Breakdown Stats -->
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+<div class="flex flex-col gap-2 rounded-xl p-6 bg-white dark:bg-slate-800 border-l-4 border-rose-500 shadow-sm">
+<div class="flex justify-between items-start">
+<p class="text-slate-500 dark:text-slate-400 text-sm font-semibold">Critical</p>
+<span class="material-symbols-outlined text-rose-500">emergency</span>
+</div>
+<div class="flex items-baseline gap-2">
+<p class="text-3xl font-bold dark:text-white">12</p>
+<span class="text-emerald-500 text-sm font-bold flex items-center"><span class="material-symbols-outlined text-xs">arrow_upward</span>+5%</span>
+</div>
+<p class="text-slate-400 text-xs mt-1">Requires immediate action</p>
+</div>
+<div class="flex flex-col gap-2 rounded-xl p-6 bg-white dark:bg-slate-800 border-l-4 border-amber-500 shadow-sm">
+<div class="flex justify-between items-start">
+<p class="text-slate-500 dark:text-slate-400 text-sm font-semibold">High</p>
+<span class="material-symbols-outlined text-amber-500">warning</span>
+</div>
+<div class="flex items-baseline gap-2">
+<p class="text-3xl font-bold dark:text-white">24</p>
+<span class="text-rose-500 text-sm font-bold flex items-center"><span class="material-symbols-outlined text-xs">arrow_downward</span>-2%</span>
+</div>
+<p class="text-slate-400 text-xs mt-1">Service impact likely</p>
+</div>
+<div class="flex flex-col gap-2 rounded-xl p-6 bg-white dark:bg-slate-800 border-l-4 border-blue-500 shadow-sm">
+<div class="flex justify-between items-start">
+<p class="text-slate-500 dark:text-slate-400 text-sm font-semibold">Medium</p>
+<span class="material-symbols-outlined text-blue-500">info</span>
+</div>
+<div class="flex items-baseline gap-2">
+<p class="text-3xl font-bold dark:text-white">45</p>
+<span class="text-emerald-500 text-sm font-bold flex items-center"><span class="material-symbols-outlined text-xs">arrow_upward</span>+10%</span>
+</div>
+<p class="text-slate-400 text-xs mt-1">Minor performance issues</p>
+</div>
+<div class="flex flex-col gap-2 rounded-xl p-6 bg-white dark:bg-slate-800 border-l-4 border-slate-400 shadow-sm">
+<div class="flex justify-between items-start">
+<p class="text-slate-500 dark:text-slate-400 text-sm font-semibold">Low</p>
+<span class="material-symbols-outlined text-slate-400">help_outline</span>
+</div>
+<div class="flex items-baseline gap-2">
+<p class="text-3xl font-bold dark:text-white">89</p>
+<span class="text-slate-400 text-sm font-bold">0%</span>
+</div>
+<p class="text-slate-400 text-xs mt-1">System logs &amp; warnings</p>
+</div>
+</div>
+<!-- MTTR and Charts Section -->
+<div class="grid grid-cols-1 xl:grid-cols-3 gap-6">
+<!-- Resolution Trends (MTTR) -->
+<div class="xl:col-span-2 rounded-xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 p-6">
+<div class="flex justify-between items-center mb-6">
+<h3 class="text-lg font-bold dark:text-white">Mean Time to Resolution (MTTR)</h3>
+<select class="bg-slate-100 dark:bg-slate-700 border-none rounded text-xs font-semibold py-1 px-3">
+<option>Last 7 Days</option>
+<option>Last 30 Days</option>
+</select>
+</div>
+<div class="h-64 flex items-end justify-between gap-2 px-2">
+<div class="flex flex-col items-center gap-2 flex-1 group">
+<div class="w-full bg-primary/20 group-hover:bg-primary transition-colors rounded-t-sm" style="height: 40%;"></div>
+<span class="text-[10px] font-bold text-slate-500">Mon</span>
+</div>
+<div class="flex flex-col items-center gap-2 flex-1 group">
+<div class="w-full bg-primary/20 group-hover:bg-primary transition-colors rounded-t-sm" style="height: 65%;"></div>
+<span class="text-[10px] font-bold text-slate-500">Tue</span>
+</div>
+<div class="flex flex-col items-center gap-2 flex-1 group">
+<div class="w-full bg-primary/20 group-hover:bg-primary transition-colors rounded-t-sm" style="height: 55%;"></div>
+<span class="text-[10px] font-bold text-slate-500">Wed</span>
+</div>
+<div class="flex flex-col items-center gap-2 flex-1 group">
+<div class="w-full bg-primary group-hover:bg-primary transition-colors rounded-t-sm" style="height: 90%;"></div>
+<span class="text-[10px] font-bold text-primary">Thu</span>
+</div>
+<div class="flex flex-col items-center gap-2 flex-1 group">
+<div class="w-full bg-primary/20 group-hover:bg-primary transition-colors rounded-t-sm" style="height: 45%;"></div>
+<span class="text-[10px] font-bold text-slate-500">Fri</span>
+</div>
+<div class="flex flex-col items-center gap-2 flex-1 group">
+<div class="w-full bg-primary/20 group-hover:bg-primary transition-colors rounded-t-sm" style="height: 30%;"></div>
+<span class="text-[10px] font-bold text-slate-500">Sat</span>
+</div>
+<div class="flex flex-col items-center gap-2 flex-1 group">
+<div class="w-full bg-primary/20 group-hover:bg-primary transition-colors rounded-t-sm" style="height: 25%;"></div>
+<span class="text-[10px] font-bold text-slate-500">Sun</span>
+</div>
+</div>
+<div class="mt-6 flex justify-center gap-6">
+<div class="flex items-center gap-2">
+<span class="h-3 w-3 rounded-full bg-primary"></span>
+<span class="text-xs font-medium text-slate-500">Current Week: <b class="text-slate-900 dark:text-white">42m</b></span>
+</div>
+<div class="flex items-center gap-2">
+<span class="h-3 w-3 rounded-full bg-slate-300 dark:bg-slate-600"></span>
+<span class="text-xs font-medium text-slate-500">Target MTTR: <b class="text-slate-900 dark:text-white">30m</b></span>
+</div>
+</div>
+</div>
+<!-- Incident Distribution Pie Chart Placeholder -->
+<div class="rounded-xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 p-6 flex flex-col">
+<h3 class="text-lg font-bold dark:text-white mb-6">Incident Categories</h3>
+<div class="flex-1 flex items-center justify-center">
+<div class="relative w-48 h-48 rounded-full border-[16px] border-slate-100 dark:border-slate-700 flex items-center justify-center">
+<div class="absolute inset-0 rounded-full border-[16px] border-primary border-r-transparent border-b-transparent border-l-transparent rotate-[30deg]"></div>
+<div class="absolute inset-0 rounded-full border-[16px] border-rose-500 border-t-transparent border-b-transparent border-l-transparent -rotate-[15deg]"></div>
+<div class="text-center">
+<span class="text-3xl font-black dark:text-white">170</span>
+<p class="text-[10px] font-bold text-slate-500 uppercase">Total Active</p>
+</div>
+</div>
+</div>
+<div class="mt-6 space-y-2">
+<div class="flex justify-between items-center text-xs">
+<div class="flex items-center gap-2">
+<span class="h-2 w-2 rounded-full bg-primary"></span>
+<span class="text-slate-500">Network Latency</span>
+</div>
+<span class="font-bold dark:text-white">45%</span>
+</div>
+<div class="flex justify-between items-center text-xs">
+<div class="flex items-center gap-2">
+<span class="h-2 w-2 rounded-full bg-rose-500"></span>
+<span class="text-slate-500">Security Breach</span>
+</div>
+<span class="font-bold dark:text-white">30%</span>
+</div>
+<div class="flex justify-between items-center text-xs">
+<div class="flex items-center gap-2">
+<span class="h-2 w-2 rounded-full bg-amber-500"></span>
+<span class="text-slate-500">API Errors</span>
+</div>
+<span class="font-bold dark:text-white">25%</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Hotspots and Recent Incidents -->
+<div class="grid grid-cols-1 xl:grid-cols-2 gap-6">
+<!-- Current Hotspots -->
+<div class="rounded-xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 p-6">
+<div class="flex justify-between items-center mb-4">
+<h3 class="text-lg font-bold dark:text-white">Current Hotspots</h3>
+<span class="material-symbols-outlined text-primary">map</span>
+</div>
+<div class="relative h-64 rounded-lg bg-slate-100 dark:bg-slate-900 overflow-hidden border border-slate-200 dark:border-slate-700">
+<div class="absolute inset-0 opacity-40 mix-blend-overlay dark:opacity-20" data-alt="Abstract geographical map outline with heatmap spots" data-location="Global Map" style="background-image: url('https://placeholder.pics/svg/300'); background-size: cover;"></div>
+<!-- Pulse Dots representing Hotspots -->
+<div class="absolute top-[20%] left-[30%] h-4 w-4 bg-rose-500 rounded-full animate-pulse shadow-lg shadow-rose-500/50"></div>
+<div class="absolute top-[50%] left-[60%] h-3 w-3 bg-rose-500 rounded-full animate-pulse shadow-lg shadow-rose-500/50"></div>
+<div class="absolute top-[40%] left-[45%] h-2 w-2 bg-amber-500 rounded-full animate-pulse shadow-lg shadow-amber-500/50"></div>
+<div class="absolute bottom-4 left-4 bg-white/90 dark:bg-slate-800/90 backdrop-blur-sm p-3 rounded-lg text-xs shadow-xl">
+<p class="font-bold mb-2">Live Heatmap</p>
+<div class="space-y-1">
+<div class="flex items-center gap-2">
+<span class="h-2 w-2 rounded-full bg-rose-500"></span>
+<span>High Frequency</span>
+</div>
+<div class="flex items-center gap-2">
+<span class="h-2 w-2 rounded-full bg-amber-500"></span>
+<span>Moderate Alert</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Incident Cards / List -->
+<div class="flex flex-col gap-4">
+<h3 class="text-lg font-bold dark:text-white px-2">Recently Detected</h3>
+<div class="space-y-3">
+<div class="bg-white dark:bg-slate-800 p-4 rounded-xl border border-slate-200 dark:border-slate-700 flex gap-4 hover:shadow-md transition-shadow cursor-pointer">
+<div class="h-10 w-10 rounded-lg bg-rose-500/10 text-rose-500 flex items-center justify-center shrink-0">
+<span class="material-symbols-outlined">security</span>
+</div>
+<div class="flex-1">
+<div class="flex justify-between items-start">
+<h4 class="font-bold text-sm dark:text-white">DB Login Brute Force</h4>
+<span class="text-[10px] font-bold bg-rose-500 text-white px-2 py-0.5 rounded">CRITICAL</span>
+</div>
+<p class="text-xs text-slate-500 dark:text-slate-400 mt-1">Detected unusual traffic from 192.168.1.1 on primary cluster.</p>
+<div class="flex items-center gap-3 mt-3 text-[10px] text-slate-400 font-medium">
+<span class="flex items-center gap-1"><span class="material-symbols-outlined text-xs">schedule</span> 2m ago</span>
+<span class="flex items-center gap-1"><span class="material-symbols-outlined text-xs">person</span> Assigned: J. Doe</span>
+</div>
+</div>
+</div>
+<div class="bg-white dark:bg-slate-800 p-4 rounded-xl border border-slate-200 dark:border-slate-700 flex gap-4 hover:shadow-md transition-shadow cursor-pointer">
+<div class="h-10 w-10 rounded-lg bg-amber-500/10 text-amber-500 flex items-center justify-center shrink-0">
+<span class="material-symbols-outlined">api</span>
+</div>
+<div class="flex-1">
+<div class="flex justify-between items-start">
+<h4 class="font-bold text-sm dark:text-white">Auth API Latency Spike</h4>
+<span class="text-[10px] font-bold bg-amber-500 text-white px-2 py-0.5 rounded">HIGH</span>
+</div>
+<p class="text-xs text-slate-500 dark:text-slate-400 mt-1">P99 response time increased to 2.4s in us-east-1.</p>
+<div class="flex items-center gap-3 mt-3 text-[10px] text-slate-400 font-medium">
+<span class="flex items-center gap-1"><span class="material-symbols-outlined text-xs">schedule</span> 15m ago</span>
+<span class="flex items-center gap-1"><span class="material-symbols-outlined text-xs">person</span> Unassigned</span>
+</div>
+</div>
+</div>
+<div class="bg-white dark:bg-slate-800 p-4 rounded-xl border border-slate-200 dark:border-slate-700 flex gap-4 hover:shadow-md transition-shadow cursor-pointer opacity-80">
+<div class="h-10 w-10 rounded-lg bg-blue-500/10 text-blue-500 flex items-center justify-center shrink-0">
+<span class="material-symbols-outlined">analytics</span>
+</div>
+<div class="flex-1">
+<div class="flex justify-between items-start">
+<h4 class="font-bold text-sm dark:text-white">Slow Log Rotation</h4>
+<span class="text-[10px] font-bold bg-blue-500 text-white px-2 py-0.5 rounded">MEDIUM</span>
+</div>
+<p class="text-xs text-slate-500 dark:text-slate-400 mt-1">Storage threshold reached on worker node 04.</p>
+<div class="flex items-center gap-3 mt-3 text-[10px] text-slate-400 font-medium">
+<span class="flex items-center gap-1"><span class="material-symbols-outlined text-xs">schedule</span> 42m ago</span>
+<span class="flex items-center gap-1"><span class="material-symbols-outlined text-xs">person</span> Assigned: A. Smith</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</main>
+</div>
+</div>
+</body></html>

@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Global SOC Overview - IoT Trust Engine</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#388bff",
+                        "background-light": "#f5f7f8",
+                        "background-dark": "#0D1117",
+                        "surface-dark": "#161B22",
+                        "border-dark": "#30363D",
+                        "active-dark": "#21262D",
+                        "text-primary": "#E6EDF3",
+                        "text-secondary": "#8B949E",
+                        "critical": "#FF4444",
+                        "warning": "#E3A008",
+                        "success": "#2EA043",
+                    },
+                    fontFamily: {
+                        "display": ["Inter", "sans-serif"]
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                },
+            },
+        }
+    </script>
+<style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #0D1117;
+        }
+        .sidebar-active {
+            border-left: 3px solid #388bff;
+            background-color: #21262D;
+        }
+    </style>
+</head>
+<body class="bg-background-light dark:bg-background-dark text-slate-900 dark:text-slate-100 font-display min-h-screen flex">
+<!-- Sidebar Navigation -->
+<aside class="w-64 flex-shrink-0 flex flex-col border-r border-border-dark bg-background-dark">
+<div class="p-6 flex items-center gap-3">
+<div class="size-8 bg-primary rounded flex items-center justify-center text-white">
+<span class="material-symbols-outlined text-xl">shield_lock</span>
+</div>
+<div>
+<h1 class="text-text-primary text-sm font-bold tracking-tight uppercase">Global SOC</h1>
+<p class="text-text-secondary text-xs">IoT Trust Engine</p>
+</div>
+</div>
+<nav class="flex-1 px-3 space-y-1">
+<a class="sidebar-active flex items-center gap-3 px-3 py-2.5 text-text-primary rounded-r" href="#">
+<span class="material-symbols-outlined text-[20px]">dashboard</span>
+<span class="text-sm font-medium">SOC Dashboard</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2.5 text-text-secondary hover:bg-surface-dark transition-colors rounded" href="#">
+<span class="material-symbols-outlined text-[20px]">memory</span>
+<span class="text-sm font-medium">IoT Inventory</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2.5 text-text-secondary hover:bg-surface-dark transition-colors rounded" href="#">
+<span class="material-symbols-outlined text-[20px]">security</span>
+<span class="text-sm font-medium">Trust Analysis</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2.5 text-text-secondary hover:bg-surface-dark transition-colors rounded" href="#">
+<span class="material-symbols-outlined text-[20px]">notifications</span>
+<span class="text-sm font-medium">Incident Logs</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2.5 text-text-secondary hover:bg-surface-dark transition-colors rounded" href="#">
+<span class="material-symbols-outlined text-[20px]">lan</span>
+<span class="text-sm font-medium">Network Map</span>
+</a>
+</nav>
+<div class="p-4 border-t border-border-dark space-y-4">
+<div class="bg-surface-dark p-3 rounded-lg">
+<p class="text-[10px] text-text-secondary uppercase font-bold mb-1">System Health</p>
+<div class="flex items-center gap-2">
+<div class="h-1.5 flex-1 bg-border-dark rounded-full overflow-hidden">
+<div class="h-full bg-success w-[94%]"></div>
+</div>
+<span class="text-[10px] text-text-primary font-medium">94%</span>
+</div>
+</div>
+<button class="w-full bg-primary hover:bg-primary/90 text-white text-xs font-bold py-2 px-4 rounded transition-colors uppercase tracking-wider flex items-center justify-center gap-2">
+<span class="material-symbols-outlined text-sm">download</span>
+                Export Report
+            </button>
+</div>
+</aside>
+<!-- Main Content Area -->
+<main class="flex-1 flex flex-col min-w-0 h-screen overflow-hidden">
+<!-- Top Navigation -->
+<header class="h-14 border-b border-border-dark bg-surface-dark flex items-center justify-between px-6 z-10">
+<div class="flex items-center gap-6">
+<div class="flex items-center gap-2 px-3 py-1 bg-background-dark/50 border border-border-dark rounded-full">
+<span class="relative flex h-2 w-2">
+<span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-success opacity-75"></span>
+<span class="relative inline-flex rounded-full h-2 w-2 bg-success"></span>
+</span>
+<span class="text-[10px] font-bold text-success uppercase tracking-widest">Live Monitoring</span>
+</div>
+<div class="hidden md:flex items-center gap-4">
+<a class="text-text-primary text-xs font-medium border-b-2 border-primary py-4" href="#">Global Overview</a>
+<a class="text-text-secondary hover:text-text-primary text-xs font-medium py-4 transition-colors" href="#">Forensics</a>
+<a class="text-text-secondary hover:text-text-primary text-xs font-medium py-4 transition-colors" href="#">Alert Config</a>
+</div>
+</div>
+<div class="flex items-center gap-4">
+<div class="relative group">
+<span class="material-symbols-outlined text-text-secondary cursor-pointer hover:text-text-primary">search</span>
+</div>
+<div class="relative">
+<span class="material-symbols-outlined text-text-secondary cursor-pointer hover:text-text-primary">notifications</span>
+<span class="absolute top-0 right-0 h-2 w-2 bg-critical rounded-full border border-surface-dark"></span>
+</div>
+<div class="h-8 w-8 rounded-full overflow-hidden border border-border-dark">
+<img class="w-full h-full object-cover" data-alt="User profile avatar icon" src="https://lh3.googleusercontent.com/aida-public/AB6AXuC-oYl-JGtJlanqW5uGrdJpvG5IUBCR4ycBP17VzQCwYF8uM7X0NG9KAAA6jTYvGOLklsKNuuwscMTzzuqNctWi9hQSaC0fvdEk8Fln5EgjjStEtrY5UvpURixwFqcK2g4O14GtktD8CnEME6hzlaxTouOOS5IJKyfPChnsOsyvhbkD_c6R0bHQDOnLIdUR85tAeZSEJHihoX75WIKADLu8IXoe6AorVgIoSlRRARtph-Yiz-0xOsqPoMKJRzMWyPCldN0HRO7osyfJ"/>
+</div>
+</div>
+</header>
+<!-- Dashboard Content Scroll Area -->
+<div class="flex-1 overflow-y-auto p-6 space-y-6">
+<!-- Metric Summary Cards -->
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+<!-- Critical Threats -->
+<div class="bg-surface-dark border-l-4 border-critical p-5 flex flex-col justify-between">
+<div>
+<p class="text-text-secondary text-xs font-medium uppercase tracking-wider">Critical Threats</p>
+<h3 class="text-critical text-3xl font-bold mt-1">12</h3>
+</div>
+<div class="flex items-center gap-1 mt-4">
+<span class="material-symbols-outlined text-critical text-sm">trending_up</span>
+<span class="text-critical text-xs font-medium">+2 nodes since 1h</span>
+</div>
+</div>
+<!-- Low Trust -->
+<div class="bg-surface-dark border-l-4 border-warning p-5 flex flex-col justify-between">
+<div>
+<p class="text-text-secondary text-xs font-medium uppercase tracking-wider">Low Trust Nodes</p>
+<h3 class="text-warning text-3xl font-bold mt-1">48</h3>
+</div>
+<div class="flex items-center gap-1 mt-4">
+<span class="material-symbols-outlined text-warning text-sm">trending_down</span>
+<span class="text-warning text-xs font-medium">-5.1% improvements</span>
+</div>
+</div>
+<!-- Total Devices -->
+<div class="bg-surface-dark border-l-4 border-text-primary p-5 flex flex-col justify-between">
+<div>
+<p class="text-text-secondary text-xs font-medium uppercase tracking-wider">Active Devices</p>
+<h3 class="text-text-primary text-3xl font-bold mt-1">14,209</h3>
+</div>
+<div class="flex items-center gap-1 mt-4">
+<span class="material-symbols-outlined text-success text-sm">check_circle</span>
+<span class="text-success text-xs font-medium">99.2% Online</span>
+</div>
+</div>
+<!-- Avg Trust Score -->
+<div class="bg-surface-dark border-l-4 border-warning p-5 flex flex-col justify-between">
+<div>
+<p class="text-text-secondary text-xs font-medium uppercase tracking-wider">Avg Trust Score</p>
+<h3 class="text-warning text-3xl font-bold mt-1">82%</h3>
+</div>
+<div class="flex items-center gap-1 mt-4 text-text-secondary">
+<span class="material-symbols-outlined text-sm">history</span>
+<span class="text-xs font-medium">Stable (7-day avg)</span>
+</div>
+</div>
+</div>
+<div class="grid grid-cols-1 xl:grid-cols-3 gap-6">
+<!-- Geographic Distribution -->
+<div class="xl:col-span-2 bg-surface-dark border border-border-dark rounded overflow-hidden flex flex-col min-h-[500px]">
+<div class="p-4 border-b border-border-dark flex items-center justify-between">
+<h2 class="text-text-primary text-sm font-bold uppercase tracking-widest">Geographic Distribution</h2>
+<div class="flex gap-2">
+<button class="text-text-secondary hover:text-text-primary p-1">
+<span class="material-symbols-outlined text-xl">zoom_in</span>
+</button>
+<button class="text-text-secondary hover:text-text-primary p-1">
+<span class="material-symbols-outlined text-xl">zoom_out</span>
+</button>
+<button class="text-text-secondary hover:text-text-primary p-1">
+<span class="material-symbols-outlined text-xl">filter_list</span>
+</button>
+</div>
+</div>
+<div class="flex-1 relative bg-[#0B0E14]" data-location="World Map" style="">
+<!-- Simulated Map Elements -->
+<img class="w-full h-full object-cover opacity-40" data-alt="Dark stylized global map with status pips" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCugfDx-_oKyl2qtgt3JXXndgZhAhz6ab1fBrAax9L5qAPXfdZyFMBKQc6aLeWLg-Kf2H5O0-8iAxpP64CMa-JFUOlUn1rN2BfYBNfBs6gDmNhsNlfFX2cbbajk0AvzZbwYRkM4bLPbuc5mtQQpkEvvpFiJSjGgr0NeuPXDqdqXr5xi5iDzGXEiZ1A41L8yf4l0w36sH-vR4Nkbo73LV5k1XyC9WWcW7B3BAo5YwqOautVrU9sn-DcMA4iCB3c3o4XrjP81U1zTnjAH"/>
+<!-- Status Pips -->
+<div class="absolute top-[25%] left-[20%] group">
+<span class="relative flex h-3 w-3">
+<span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-critical opacity-75"></span>
+<span class="relative inline-flex rounded-full h-3 w-3 bg-critical shadow-lg shadow-critical/50"></span>
+</span>
+<div class="hidden group-hover:block absolute bottom-full left-1/2 -translate-x-1/2 mb-2 bg-active-dark border border-critical p-2 rounded text-[10px] whitespace-nowrap z-20">
+<p class="text-text-primary font-bold">North America - Cluster A</p>
+<p class="text-critical">4 Critical Alerts</p>
+</div>
+</div>
+<div class="absolute top-[40%] left-[45%]">
+<span class="inline-flex rounded-full h-3 w-3 bg-warning shadow-lg shadow-warning/50"></span>
+</div>
+<div class="absolute top-[60%] left-[75%]">
+<span class="inline-flex rounded-full h-2 w-2 bg-success"></span>
+</div>
+<div class="absolute top-[35%] left-[65%]">
+<span class="inline-flex rounded-full h-3 w-3 bg-warning shadow-lg shadow-warning/50"></span>
+</div>
+<div class="absolute top-[50%] left-[15%]">
+<span class="inline-flex rounded-full h-2 w-2 bg-success"></span>
+</div>
+<!-- Map Legend -->
+<div class="absolute bottom-4 left-4 bg-background-dark/80 backdrop-blur-md border border-border-dark p-3 rounded space-y-2">
+<div class="flex items-center gap-2">
+<span class="h-2 w-2 rounded-full bg-critical"></span>
+<span class="text-[10px] text-text-secondary">High Attack Surface</span>
+</div>
+<div class="flex items-center gap-2">
+<span class="h-2 w-2 rounded-full bg-warning"></span>
+<span class="text-[10px] text-text-secondary">Degraded Trust</span>
+</div>
+<div class="flex items-center gap-2">
+<span class="h-2 w-2 rounded-full bg-success"></span>
+<span class="text-[10px] text-text-secondary">Secure Nodes</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Recent Alerts Feed -->
+<div class="flex flex-col gap-6">
+<div class="bg-surface-dark border border-border-dark rounded flex flex-col h-full max-h-[600px]">
+<div class="p-4 border-b border-border-dark flex items-center justify-between">
+<h2 class="text-text-primary text-sm font-bold uppercase tracking-widest">Recent Security Alerts</h2>
+<span class="bg-critical/20 text-critical text-[10px] font-bold px-2 py-0.5 rounded">8 NEW</span>
+</div>
+<div class="flex-1 overflow-y-auto divide-y divide-border-dark">
+<!-- Alert Item: Critical -->
+<div class="p-4 bg-[#1A0A0A] border-l-2 border-critical hover:bg-[#2A0F0F] transition-colors cursor-pointer group">
+<div class="flex justify-between items-start mb-1">
+<span class="text-critical text-[10px] font-bold tracking-tighter uppercase">Incident: DDoS Pattern</span>
+<span class="text-text-secondary text-[10px]">2m ago</span>
+</div>
+<h4 class="text-text-primary text-sm font-semibold group-hover:text-critical transition-colors">Abnormal outgoing traffic from ID-8821</h4>
+<p class="text-text-secondary text-xs mt-1 line-clamp-2">Node 192.168.1.144 initiated 4.2k requests/sec to external IP: 45.12.98.x. Automated quarantine pending.</p>
+<div class="flex gap-2 mt-3">
+<button class="bg-critical text-white text-[10px] px-3 py-1 font-bold rounded uppercase">Isolate</button>
+<button class="bg-active-dark text-text-primary text-[10px] px-3 py-1 font-bold rounded uppercase border border-border-dark">Details</button>
+</div>
+</div>
+<!-- Alert Item: Warning -->
+<div class="p-4 bg-[#1A1200] border-l-2 border-warning hover:bg-[#2A1D00] transition-colors cursor-pointer">
+<div class="flex justify-between items-start mb-1">
+<span class="text-warning text-[10px] font-bold tracking-tighter uppercase">Trust Warning</span>
+<span class="text-text-secondary text-[10px]">14m ago</span>
+</div>
+<h4 class="text-text-primary text-sm font-semibold">Firmware Mismatch: SecureGateway_v2</h4>
+<p class="text-text-secondary text-xs mt-1">Version 4.11.2 detected (Legacy). Known CVE-2023-4412 vulnerability present in this build.</p>
+</div>
+<!-- Alert Item: Warning -->
+<div class="p-4 bg-[#1A1200] border-l-2 border-warning hover:bg-[#2A1D00] transition-colors cursor-pointer">
+<div class="flex justify-between items-start mb-1">
+<span class="text-warning text-[10px] font-bold tracking-tighter uppercase">Geo Anomaly</span>
+<span class="text-text-secondary text-[10px]">42m ago</span>
+</div>
+<h4 class="text-text-primary text-sm font-semibold">Login from Unknown Region</h4>
+<p class="text-text-secondary text-xs mt-1">Account 'admin_srv' logged in from unexpected location: St. Petersburg, RU.</p>
+</div>
+<!-- Alert Item: Success/Info -->
+<div class="p-4 bg-background-dark/30 hover:bg-surface-dark transition-colors cursor-pointer">
+<div class="flex justify-between items-start mb-1">
+<span class="text-success text-[10px] font-bold tracking-tighter uppercase">Maintenance Complete</span>
+<span class="text-text-secondary text-[10px]">1h ago</span>
+</div>
+<h4 class="text-text-primary text-sm font-semibold">Patch Deployment Cluster B</h4>
+<p class="text-text-secondary text-xs mt-1">All 142 nodes in Cluster B successfully updated to v4.12.5.</p>
+</div>
+</div>
+<div class="p-3 border-t border-border-dark text-center">
+<button class="text-primary text-xs font-bold uppercase hover:underline">View All Incident Logs</button>
+</div>
+</div>
+</div>
+</div>
+<!-- Detailed Inventory Table (Optional/Footer Area) -->
+<div class="bg-surface-dark border border-border-dark rounded overflow-hidden">
+<div class="px-6 py-4 border-b border-border-dark flex items-center justify-between">
+<h2 class="text-text-primary text-sm font-bold uppercase tracking-widest">Network Node Status</h2>
+<div class="flex gap-4">
+<input class="bg-background-dark border-border-dark text-text-primary text-xs rounded px-3 py-1.5 w-48 focus:ring-1 focus:ring-primary" placeholder="Filter by ID..." type="text"/>
+<button class="text-text-secondary text-xs flex items-center gap-1"><span class="material-symbols-outlined text-sm">download</span> CSV</button>
+</div>
+</div>
+<div class="overflow-x-auto">
+<table class="w-full text-left">
+<thead>
+<tr class="text-[10px] text-text-secondary font-bold uppercase tracking-wider bg-background-dark/50">
+<th class="px-6 py-3">Device ID</th>
+<th class="px-6 py-3">Type</th>
+<th class="px-6 py-3">Location</th>
+<th class="px-6 py-3">Trust Score</th>
+<th class="px-6 py-3">Status</th>
+<th class="px-6 py-3">Last Seen</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-border-dark text-xs">
+<tr class="hover:bg-active-dark/30">
+<td class="px-6 py-4 font-mono text-text-primary">#NODE-8812-AF</td>
+<td class="px-6 py-4 text-text-secondary">Smart Sensor v3</td>
+<td class="px-6 py-4 text-text-secondary">London, UK</td>
+<td class="px-6 py-4">
+<div class="flex items-center gap-2">
+<div class="h-1.5 w-16 bg-border-dark rounded-full overflow-hidden">
+<div class="h-full bg-success w-[98%]"></div>
+</div>
+<span class="text-success font-bold">98</span>
+</div>
+</td>
+<td class="px-6 py-4"><span class="px-2 py-0.5 bg-success/10 text-success rounded text-[10px] font-bold">STABLE</span></td>
+<td class="px-6 py-4 text-text-secondary">Just now</td>
+</tr>
+<tr class="hover:bg-active-dark/30">
+<td class="px-6 py-4 font-mono text-text-primary">#NODE-4412-XC</td>
+<td class="px-6 py-4 text-text-secondary">Industrial PLC</td>
+<td class="px-6 py-4 text-text-secondary">Tokyo, JP</td>
+<td class="px-6 py-4">
+<div class="flex items-center gap-2">
+<div class="h-1.5 w-16 bg-border-dark rounded-full overflow-hidden">
+<div class="h-full bg-warning w-[42%]"></div>
+</div>
+<span class="text-warning font-bold">42</span>
+</div>
+</td>
+<td class="px-6 py-4"><span class="px-2 py-0.5 bg-warning/10 text-warning rounded text-[10px] font-bold">WARNING</span></td>
+<td class="px-6 py-4 text-text-secondary">12m ago</td>
+</tr>
+<tr class="hover:bg-active-dark/30">
+<td class="px-6 py-4 font-mono text-text-primary">#NODE-2291-ZZ</td>
+<td class="px-6 py-4 text-text-secondary">Edge Gateway</td>
+<td class="px-6 py-4 text-text-secondary">Berlin, DE</td>
+<td class="px-6 py-4">
+<div class="flex items-center gap-2">
+<div class="h-1.5 w-16 bg-border-dark rounded-full overflow-hidden">
+<div class="h-full bg-critical w-[12%]"></div>
+</div>
+<span class="text-critical font-bold">12</span>
+</div>
+</td>
+<td class="px-6 py-4"><span class="px-2 py-0.5 bg-critical/10 text-critical rounded text-[10px] font-bold">BREACH</span></td>
+<td class="px-6 py-4 text-text-secondary">4m ago</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+</main>
+</body></html>
