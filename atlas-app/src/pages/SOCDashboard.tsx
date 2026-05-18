@@ -30,6 +30,20 @@ export default function SOCDashboard() {
   const [allDevices, setAllDevices] = useState<any[]>([]);
   const [isScoring, setIsScoring] = useState(false);
 
+  // Simulate Attack form state
+  const [attackForm, setAttackForm] = useState({ deviceId: '', attackType: 'Botnet Recruitment' });
+  const [attackResult, setAttackResult] = useState<any>(null);
+  const [isAttacking, setIsAttacking] = useState(false);
+
+  const ATTACK_TYPES = [
+    'Botnet Recruitment',
+    'DDoS Amplification',
+    'Man-in-the-Middle',
+    'Firmware Injection',
+    'Credential Brute-Force',
+    'Data Exfiltration',
+  ];
+
   useEffect(() => {
     deviceService.getDevices({ limit: 100 }).then(res => setAllDevices(res.data.data || res.data)).catch(console.error);
   }, []);
@@ -42,11 +56,33 @@ export default function SOCDashboard() {
       const res = await telemetryService.ingest(telemetryForm);
       setTelemetryResult(res.data);
       dashboardService.getOverview().then(r => setOverview(r.data));
+      window.dispatchEvent(new CustomEvent('atlas-network-refresh'));
     } catch (err) {
       console.error(err);
       alert('Error scoring telemetry: The ML analysis may have timed out. Please try again.');
     } finally {
       setIsScoring(false);
+    }
+  };
+
+  const handleSimulateAttack = async () => {
+    setIsAttacking(true);
+    setAttackResult(null);
+    try {
+      const res = await dashboardService.simulateAttack({
+        deviceId:   attackForm.deviceId || undefined,
+        attackType: attackForm.attackType,
+      });
+      setAttackResult(res.data);
+      // Immediately refresh dashboard stats and fire cross-page refresh event
+      dashboardService.getOverview().then(r => setOverview(r.data));
+      window.dispatchEvent(new CustomEvent('atlas-network-refresh'));
+      window.dispatchEvent(new CustomEvent('atlas-cycle-status', { detail: { phase: 'Completed', logs: [] } }));
+    } catch (err: any) {
+      console.error(err);
+      alert(`Attack simulation failed: ${err?.response?.data?.detail ?? err.message}`);
+    } finally {
+      setIsAttacking(false);
     }
   };
 
@@ -94,25 +130,33 @@ export default function SOCDashboard() {
             <div className="cc-card cc-card-green" onClick={() => navigate('/inventory?status=STABLE')} style={{ cursor: 'pointer' }}>
               <h4 className="cc-card-title">TRUSTED</h4>
               <p className="cc-card-val val-green">{overview.trustedDevices ?? 0}</p>
-              <p className="cc-card-sub">Score ≥ 80</p>
+              <p className="cc-card-sub">Score ≥ 70</p>
+            </div>
+            <div className="cc-card cc-card-orange" onClick={() => navigate('/inventory?status=WARNING')} style={{ cursor: 'pointer' }}>
+              <h4 className="cc-card-title">SUSPICIOUS</h4>
+              <p className="cc-card-val val-orange">{overview.warningDevices ?? 0}</p>
+              <p className="cc-card-sub">Score 40–69</p>
             </div>
             <div className="cc-card cc-card-red" onClick={() => navigate('/inventory?status=BREACH')} style={{ cursor: 'pointer' }}>
-              <h4 className="cc-card-title">CRITICAL</h4>
-              <p className="cc-card-val val-red">{overview.criticalThreats}</p>
-              <p className="cc-card-sub">Score &lt; 20</p>
-            </div>
-            <div className="cc-card cc-card-orange" onClick={() => navigate('/incidents')} style={{ cursor: 'pointer' }}>
-              <h4 className="cc-card-title">ALERTS</h4>
-              <p className="cc-card-val val-orange">{overview.alerts ?? 0}</p>
-              <p className="cc-card-sub">Click to view feed</p>
+              <h4 className="cc-card-title">BREACHED</h4>
+              <p className="cc-card-val val-red">{overview.breachedDevices ?? overview.criticalThreats}</p>
+              <p className="cc-card-sub">Score &lt; 40</p>
             </div>
             <div className="cc-card" onClick={() => navigate('/trust')} style={{ cursor: 'pointer' }}>
               <h4 className="cc-card-title">AVG TRUST</h4>
-              <p className="cc-card-val val-green">{overview.avgTrustScore}</p>
-              <p className="cc-card-sub">Network score</p>
+              <p className="cc-card-val" style={{
+                color: overview.avgTrustScore >= 70 ? '#00E676'
+                     : overview.avgTrustScore >= 40 ? '#FFD600'
+                     : '#FF4444',
+                transition: 'color 0.5s ease',
+              }}>
+                {overview.avgTrustScore}
+              </p>
+              <p className="cc-card-sub">Fleet avg score</p>
             </div>
           </div>
         </section>
+
 
         {/* --- LIVE SYSTEM LOGS --- */}
         <section>
@@ -142,6 +186,75 @@ export default function SOCDashboard() {
                     </span>
                   </div>
                 ))
+              )}
+            </div>
+          </div>
+        </section>
+
+        {/* --- SIMULATE ATTACK --- */}
+        <section>
+          <div className="param-panel" style={{ border: '1px solid rgba(255,68,68,0.3)', background: 'rgba(255,68,68,0.04)' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+              <div className="param-header">
+                <div className="param-icon" style={{ background: 'rgba(255,68,68,0.15)', color: '#FF4444' }}>⚡</div>
+                <div>
+                  <h4 className="param-title" style={{ color: '#FF4444' }}>SIMULATE ATTACK</h4>
+                  <p className="param-sub">Drops trust score to BREACH level in real database — updates network map &amp; analytics</p>
+                </div>
+              </div>
+            </div>
+
+            <div style={{ marginTop: 16, display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16 }}>
+              <div>
+                <label style={{ display: 'block', fontSize: 11, color: '#FF4444', marginBottom: 4, fontWeight: 'bold' }}>TARGET DEVICE</label>
+                <select
+                  value={attackForm.deviceId}
+                  onChange={e => setAttackForm(f => ({ ...f, deviceId: e.target.value }))}
+                  style={{ width: '100%', background: '#161B22', border: '1px solid rgba(255,68,68,0.4)', color: '#E6EDF3', padding: '8px 12px', borderRadius: 4 }}
+                >
+                  <option value="">Auto-select (first STABLE device)</option>
+                  {allDevices.map(d => (
+                    <option key={d.id} value={d.id}>
+                      {d.name} — {d.status} ({Math.round(d.trustScore ?? 0)})
+                    </option>
+                  ))}
+                </select>
+              </div>
+              <div>
+                <label style={{ display: 'block', fontSize: 11, color: '#FF4444', marginBottom: 4, fontWeight: 'bold' }}>ATTACK TYPE</label>
+                <select
+                  value={attackForm.attackType}
+                  onChange={e => setAttackForm(f => ({ ...f, attackType: e.target.value }))}
+                  style={{ width: '100%', background: '#161B22', border: '1px solid rgba(255,68,68,0.4)', color: '#E6EDF3', padding: '8px 12px', borderRadius: 4 }}
+                >
+                  {ATTACK_TYPES.map(t => <option key={t} value={t}>{t}</option>)}
+                </select>
+              </div>
+            </div>
+
+            <div style={{ marginTop: 20, display: 'flex', alignItems: 'center', gap: 24, padding: '16px 0', borderTop: '1px solid rgba(255,68,68,0.2)' }}>
+              <button
+                onClick={() => void handleSimulateAttack()}
+                disabled={isAttacking}
+                style={{ background: isAttacking ? '#8B0000' : '#CC0000', color: 'white', border: 'none', padding: '10px 28px', borderRadius: 6, fontWeight: 'bold', cursor: isAttacking ? 'not-allowed' : 'pointer', letterSpacing: '0.05em', fontSize: 13 }}
+              >
+                {isAttacking ? '⚡ DEPLOYING EXPLOIT...' : '⚡ LAUNCH ATTACK'}
+              </button>
+
+              {attackResult && (
+                <div style={{ display: 'flex', gap: 20, alignItems: 'center', background: 'rgba(255,68,68,0.08)', padding: '10px 18px', borderRadius: 6, border: '1px solid rgba(255,68,68,0.3)' }}>
+                  <div>
+                    <span style={{ fontSize: 11, color: '#8B949E', display: 'block' }}>TARGET</span>
+                    <strong style={{ color: '#FF4444', fontSize: 14 }}>{attackResult.target_name}</strong>
+                  </div>
+                  <div>
+                    <span style={{ fontSize: 11, color: '#8B949E', display: 'block' }}>TRUST SCORE</span>
+                    <strong style={{ color: '#FF4444', fontSize: 20 }}>{attackResult.new_score?.toFixed(1)} / 100</strong>
+                  </div>
+                  <div style={{ background: '#FF4444', color: 'white', padding: '4px 10px', borderRadius: 4, fontSize: 12, fontWeight: 'bold' }}>
+                    BREACH
+                  </div>
+                </div>
               )}
             </div>
           </div>
@@ -191,11 +304,11 @@ export default function SOCDashboard() {
                 <div style={{ display: 'flex', gap: 24, alignItems: 'center', background: 'rgba(255,255,255,0.02)', padding: '8px 16px', borderRadius: 6 }}>
                   <div>
                     <span style={{ fontSize: 11, color: '#8B949E', display: 'block' }}>TRUST SCORE</span>
-                    <strong style={{ color: telemetryResult.trustScore < 40 ? '#FF4444' : '#00FF00', fontSize: 20 }}>{telemetryResult.trustScore.toFixed(1)}</strong>
+                    <strong style={{ color: telemetryResult.trustScore < 40 ? '#FF4444' : telemetryResult.trustScore < 70 ? '#FFD600' : '#00E676', fontSize: 20 }}>{telemetryResult.trustScore.toFixed(1)}</strong>
                   </div>
                   <div>
                     <span style={{ fontSize: 11, color: '#8B949E', display: 'block' }}>NEW STATUS</span>
-                    <strong style={{ color: telemetryResult.trustScore < 40 ? '#FF4444' : '#00FF00', fontSize: 16 }}>{telemetryResult.status}</strong>
+                    <strong style={{ color: telemetryResult.trustScore < 40 ? '#FF4444' : telemetryResult.trustScore < 70 ? '#FFD600' : '#00E676', fontSize: 16 }}>{telemetryResult.status}</strong>
                   </div>
                   {telemetryResult.isAnomaly && (
                     <div style={{ background: '#FF4444', color: 'white', padding: '4px 8px', borderRadius: 4, fontSize: 12, fontWeight: 'bold' }}>

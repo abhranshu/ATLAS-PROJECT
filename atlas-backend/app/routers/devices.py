@@ -10,6 +10,7 @@ from app.database import get_db
 from app.middleware.auth import require_auth
 from app.models.device import Device
 from app.models.trust_event import TrustEvent
+from app.utils.cache import cache_delete, CacheKeys
 
 router = APIRouter(prefix="/devices", tags=["Devices"])
 
@@ -171,7 +172,49 @@ def isolate_device(device_id: UUID, _: dict = Depends(require_auth), db: Session
     row.is_isolated = True
     row.status = "OFFLINE"
     db.commit()
+    
+    # Bust relevant caches
+    cache_delete(CacheKeys.DEVICES_LIST)
+    cache_delete(CacheKeys.DASHBOARD_OVERVIEW)
+    cache_delete(CacheKeys.TRUST_OVERVIEW)
+    cache_delete(CacheKeys.NETWORK_NODES)
+    cache_delete(CacheKeys.device_detail(str(device_id)))
+    
     return {"message": "Device isolated successfully", "deviceId": str(device_id)}
+
+
+@router.post("/{device_id}/reset-trust")
+def reset_trust_score(device_id: UUID, _: dict = Depends(require_auth), db: Session = Depends(get_db)):
+    """Reset a device's trust score to 100 and status to STABLE."""
+    row = _get_or_404(db, device_id)
+    
+    row.trust_score = 100.0
+    row.status = "STABLE"
+    row.last_seen = datetime.now(timezone.utc)
+    
+    # Add a reset TrustEvent
+    trust_event = TrustEvent(
+        device_id=row.id,
+        trust_score=100.0,
+        anomaly_score=0.0,
+        is_anomaly=False,
+        features={"action": "Manual Trust Reset"},
+        shap_values={},
+        recorded_at=datetime.now(timezone.utc),
+    )
+    db.add(trust_event)
+    db.commit()
+    
+    # Bust relevant caches
+    cache_delete(CacheKeys.DEVICES_LIST)
+    cache_delete(CacheKeys.DASHBOARD_OVERVIEW)
+    cache_delete(CacheKeys.TRUST_OVERVIEW)
+    cache_delete(CacheKeys.TRUST_BREAKDOWN)
+    cache_delete(CacheKeys.NETWORK_MAP)
+    cache_delete(CacheKeys.NETWORK_NODES)
+    cache_delete(CacheKeys.device_detail(str(device_id)))
+    
+    return {"message": "Trust score reset to 100", "deviceId": str(device_id)}
 
 
 @router.get("/{device_id}")

@@ -132,6 +132,17 @@ export default function IoTInventory() {
     }
   };
 
+  const handleResetTrust = async (deviceId: string) => {
+    if (!window.confirm('Reset this device\'s trust score to 100?')) return;
+    try {
+      await deviceService.resetTrustScore(deviceId);
+      loadDevices();
+    } catch (err) {
+      console.error('Failed to reset trust score:', err);
+      setError('Failed to reset trust score');
+    }
+  };
+
   return (
     <>
       <Topbar title="IoT Inventory" subtitle="All registered devices" />
@@ -230,6 +241,7 @@ export default function IoTInventory() {
                         <td>
                           <div style={{ display: 'flex', gap: 6 }}>
                             <button className="page-btn" onClick={() => handleEdit(d)}>Edit</button>
+                            <button className="page-btn" onClick={() => handleResetTrust(d.id)} style={{ color: '#00E676' }}>Reset</button>
                             <button className="page-btn" onClick={() => handleDelete(d.id)} style={{ color: '#FF4444' }}>Delete</button>
                           </div>
                         </td>

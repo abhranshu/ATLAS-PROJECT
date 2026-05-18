@@ -14,9 +14,12 @@ export interface DashboardOverview {
   avgTrustScore: number;
   systemHealth: number;
   trustedDevices?: number;
+  warningDevices?: number;   // devices with score 40–69 (SUSPICIOUS)
+  breachedDevices?: number;  // devices with score < 40 (BREACH)
   alerts?: number;
   cyclesRun?: number;
 }
+
 
 // Device
 export interface Device {

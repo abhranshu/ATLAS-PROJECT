@@ -22,6 +22,7 @@ export const API_ENDPOINTS = {
     create: '/devices',
     update: (id: string) => `/devices/${id}`,
     remove: (id: string) => `/devices/${id}`,
+    resetTrust: (id: string) => `/devices/${id}/reset-trust`,
   },
   // Trust Analysis
   trust: {

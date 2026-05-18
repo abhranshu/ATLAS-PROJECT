@@ -400,3 +400,107 @@
 .nm-context-item.danger {
   color: #FF4444;
 }
+
+/* ─── Node trust-level animations ──────────────────────── */
+@keyframes breach-ring {
+  0%   { opacity: 1;   r: 7; }
+  50%  { opacity: 0.3; r: 10; }
+  100% { opacity: 1;   r: 7; }
+}
+
+@keyframes warn-ring {
+  0%   { opacity: 0.9; r: 6; }
+  50%  { opacity: 0.2; r: 9; }
+  100% { opacity: 0.9; r: 6; }
+}
+
+.nm-breach-ring {
+  animation: breach-ring 1.2s ease-in-out infinite;
+  transform-origin: center;
+}
+
+.nm-warn-ring {
+  animation: warn-ring 2s ease-in-out infinite;
+  transform-origin: center;
+}
+
+/* ─── Refreshing indicator ──────────────────────────────── */
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}
+
+.nm-refreshing-dot {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #00E676;
+  animation: pulse-red 1s infinite;
+  margin-left: 6px;
+}
+
+/* ─── Trust Legend Box ──────────────────────────────────── */
+.nm-legend {
+  background: rgba(11, 15, 25, 0.9);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 6px;
+  padding: 12px 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.nm-legend-title {
+  color: #4A5568;
+  font-size: 9px;
+  letter-spacing: 0.15em;
+  margin-bottom: 4px;
+}
+
+.nm-legend-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 10px;
+  color: #8B949E;
+}
+
+.nm-legend-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.nm-legend-dot.healthy  { background: #00E676; }
+.nm-legend-dot.warning  { background: #FFD600; box-shadow: 0 0 6px #FFD600; }
+.nm-legend-dot.breached { background: #FF4444; box-shadow: 0 0 8px #FF4444; animation: pulse-red 1.2s infinite; }
+
+/* ─── Auto-refresh status bar ────────────────────────────── */
+.nm-refresh-status {
+  position: absolute;
+  top: 12px;
+  right: 16px;
+  font-size: 9px;
+  color: #4A5568;
+  letter-spacing: 0.08em;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  z-index: 20;
+}
+
+.nm-refresh-active {
+  color: #00E676;
+}
+
+/* ─── Node tooltip-style score label ─────────────────────── */
+.nm-score-pill {
+  display: inline-block;
+  padding: 0 3px;
+  border-radius: 2px;
+  font-size: 1.6px;
+  font-weight: bold;
+}
+

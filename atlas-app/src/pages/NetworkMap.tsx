@@ -27,7 +27,8 @@ interface ContextMenuState {
   type: string;
 }
 
-const nodeColor = (score: number) => (score >= 80 ? '#00FF00' : score >= 40 ? '#FFA500' : '#FF4444');
+// 3-tier color: green=healthy(≥70), yellow=suspicious(40-69), red=breached(<40)
+const nodeColor = (score: number) => (score >= 70 ? '#00E676' : score >= 40 ? '#FFD600' : '#FF4444');
 const LOCAL_POSITIONS_KEY = 'atlas_network_node_positions_v1';
 const clamp = (v: number) => Math.max(2, Math.min(98, v));
 
@@ -46,6 +47,7 @@ export default function NetworkMap() {
   const [busy, setBusy] = useState(false);
   const [dragNodeId, setDragNodeId] = useState<string | null>(null);
   const [dragStartPos, setDragStartPos] = useState<{ x: number; y: number } | null>(null);
+  const [lastRefresh, setLastRefresh] = useState<Date>(new Date());
   const svgRef = useRef<SVGSVGElement>(null);
   const mapContainerRef = useRef<HTMLDivElement>(null);
 
@@ -81,6 +83,7 @@ export default function NetworkMap() {
         });
         setNodes(hydrated);
         setEdges(res.data.edges ?? []);
+        setLastRefresh(new Date());
       })
       .catch((err) => {
         console.error('Failed to load map:', err);
@@ -88,8 +91,24 @@ export default function NetworkMap() {
       });
   };
 
+  // Initial load + 5-second polling for live attack updates
   useEffect(() => {
     loadMap();
+    const interval = setInterval(loadMap, 5000);
+    return () => clearInterval(interval);
+  }, []);
+
+  // Also refresh when the attack cycle emits a status event
+  useEffect(() => {
+    const onAttackEvent = () => {
+      setTimeout(loadMap, 800); // slight delay so DB write completes first
+    };
+    window.addEventListener('atlas-cycle-status', onAttackEvent);
+    window.addEventListener('atlas-network-refresh', onAttackEvent);
+    return () => {
+      window.removeEventListener('atlas-cycle-status', onAttackEvent);
+      window.removeEventListener('atlas-network-refresh', onAttackEvent);
+    };
   }, []);
 
   useEffect(() => {
@@ -386,6 +405,9 @@ export default function NetworkMap() {
   const allNodesCount = nodes.length;
   const linkedNodesCount = edges.length;
   const breachedCount = nodes.filter((n) => n.type !== 'server' && n.trustScore < 40).length;
+  const warningCount  = nodes.filter((n) => n.type !== 'server' && n.trustScore >= 40 && n.trustScore < 70).length;
+  const healthyCount  = nodes.filter((n) => n.type !== 'server' && n.trustScore >= 70).length;
+  const threatLevel   = breachedCount > 0 ? 'CRITICAL' : warningCount > 0 ? 'ELEVATED' : 'STABLE';
   const connectStatusText = disconnectMode
     ? 'Disconnect mode: click a connected IoT node to unlink it from its server.'
     : connectSourceServerId
@@ -414,16 +436,37 @@ export default function NetworkMap() {
 
           <div className="nm-threat-box">
             <div className="nm-label">THREAT LEVEL</div>
-            <div className="nm-threat-val">{breachedCount > 0 ? 'ELEVATED' : 'STABLE'}</div>
+            <div className="nm-threat-val" style={{ color: threatLevel === 'CRITICAL' ? '#FF4444' : threatLevel === 'ELEVATED' ? '#FFD600' : '#00E676' }}>
+              {threatLevel}
+            </div>
             <div className="nm-threat-bars">
               <div className="nm-t-bar bg-green"></div>
               <div className="nm-t-bar bg-green"></div>
-              <div className="nm-t-bar bg-orange"></div>
+              <div className={`nm-t-bar ${warningCount > 0 ? 'bg-orange pulse-red' : 'bg-gray'}`}></div>
               <div className={`nm-t-bar ${breachedCount > 0 ? 'bg-red pulse-red' : 'bg-gray'}`}></div>
               <div className="nm-t-bar bg-gray"></div>
             </div>
             <div className="nm-threat-sub">
-              {breachedCount > 0 ? `${breachedCount} breached IoT node(s) detected` : 'No breached IoT node detected'}
+              {breachedCount > 0 && <span style={{ color: '#FF4444' }}>{breachedCount} BREACH &nbsp;</span>}
+              {warningCount  > 0 && <span style={{ color: '#FFD600' }}>{warningCount} WARNING &nbsp;</span>}
+              {breachedCount === 0 && warningCount === 0 && 'All IoT nodes healthy'}
+            </div>
+          </div>
+
+          {/* Color Legend */}
+          <div className="nm-legend">
+            <div className="nm-legend-title">TRUST LEVEL LEGEND</div>
+            <div className="nm-legend-row">
+              <div className="nm-legend-dot healthy"></div>
+              <span>Healthy — score ≥ 70 ({healthyCount})</span>
+            </div>
+            <div className="nm-legend-row">
+              <div className="nm-legend-dot warning"></div>
+              <span>Suspicious — score 40–69 ({warningCount})</span>
+            </div>
+            <div className="nm-legend-row">
+              <div className="nm-legend-dot breached"></div>
+              <span>Breached — score &lt; 40 ({breachedCount})</span>
             </div>
           </div>
 
@@ -438,6 +481,12 @@ export default function NetworkMap() {
         </div>
 
         <div className="nm-canvas-container" ref={mapContainerRef}>
+          {/* Auto-refresh status indicator */}
+          <div className="nm-refresh-status">
+            <span className="nm-refresh-active">● AUTO-REFRESH 5s</span>
+            <span>LAST: {lastRefresh.toLocaleTimeString()}</span>
+          </div>
+
           <div className="nm-canvas-header">
             <h3 className="nm-title">
               NETWORK MAP <span className="nm-badge">LIVE TOPOLOGY VIEW</span>
@@ -469,8 +518,12 @@ export default function NetworkMap() {
           >
             {edges.map((e, i) => {
               const from = nodes.find((n) => n.id === e.from);
-              const to = nodes.find((n) => n.id === e.to);
+              const to   = nodes.find((n) => n.id === e.to);
               if (!from || !to) return null;
+              // Edge color mirrors the IoT device's trust tier
+              const edgeColor = nodeColor(to.trustScore);
+              const isBreachedEdge = to.trustScore < 40;
+              const isWarnEdge     = to.trustScore >= 40 && to.trustScore < 70;
               return (
                 <line
                   key={`${e.from}-${e.to}-${i}`}
@@ -478,20 +531,21 @@ export default function NetworkMap() {
                   y1={from.y}
                   x2={to.x}
                   y2={to.y}
-                  stroke={e.threat ? '#FF4444' : '#00FF00'}
-                  strokeWidth={e.threat ? 0.3 : 0.15}
-                  strokeDasharray={e.threat ? '0.8,0.8' : undefined}
-                  opacity={e.threat ? 0.9 : 0.5}
+                  stroke={edgeColor}
+                  strokeWidth={isBreachedEdge ? 0.35 : isWarnEdge ? 0.25 : 0.15}
+                  strokeDasharray={isBreachedEdge ? '1,0.8' : isWarnEdge ? '1.5,1' : undefined}
+                  opacity={isBreachedEdge ? 0.95 : isWarnEdge ? 0.75 : 0.45}
                 />
               );
             })}
 
             {nodes.map((node) => {
-              const isServer = node.type === 'server';
-              const color = isServer ? '#00FF00' : nodeColor(node.trustScore);
-              const isBreached = node.type !== 'server' && node.trustScore < 40;
-              const isConnectSource = connectSourceServerId === node.id;
-              const isLinkedTarget = Boolean(connectSourceServerId && !isServer && node.serverId === connectSourceServerId);
+              const isServer   = node.type === 'server';
+              const color      = isServer ? '#00E676' : nodeColor(node.trustScore);
+              const isBreached = !isServer && node.trustScore < 40;
+              const isWarning  = !isServer && node.trustScore >= 40 && node.trustScore < 70;
+              const isConnectSource    = connectSourceServerId === node.id;
+              const isLinkedTarget     = Boolean(connectSourceServerId && !isServer && node.serverId === connectSourceServerId);
               const isDisconnectTarget = Boolean(disconnectMode && !isServer && node.serverId);
 
               return (
@@ -503,7 +557,32 @@ export default function NetworkMap() {
                   onContextMenu={(e) => handleNodeContextMenu(e, node)}
                   onClick={(e) => void handleNodeClick(e, node)}
                 >
-                  <circle r={isServer ? 8 : 6} fill={color} opacity={0.1} style={{ filter: 'blur(3px)' }} />
+                  {/* Animated pulsing ring for BREACH nodes */}
+                  {isBreached && (
+                    <circle
+                      r={8}
+                      fill="none"
+                      stroke="#FF4444"
+                      strokeWidth="0.5"
+                      className="nm-breach-ring"
+                    />
+                  )}
+
+                  {/* Animated pulsing ring for WARNING nodes */}
+                  {isWarning && (
+                    <circle
+                      r={7}
+                      fill="none"
+                      stroke="#FFD600"
+                      strokeWidth="0.4"
+                      className="nm-warn-ring"
+                    />
+                  )}
+
+                  {/* Glow halo */}
+                  <circle r={isServer ? 8 : 6} fill={color} opacity={0.12} style={{ filter: 'blur(3px)' }} />
+
+                  {/* Node body */}
                   <rect
                     x={isServer ? -5 : -3.5}
                     y={isServer ? -5 : -3.5}
@@ -519,9 +598,11 @@ export default function NetworkMap() {
                           : color
                     }
                     strokeWidth={
-                      isDisconnectTarget || isConnectSource || isLinkedTarget ? 0.45 : isServer ? 0.4 : 0.2
+                      isDisconnectTarget || isConnectSource || isLinkedTarget ? 0.45 : isServer ? 0.4 : isBreached ? 0.35 : 0.2
                     }
                   />
+
+                  {/* Node icon */}
                   {isServer ? (
                     <>
                       <rect x="-2" y="-2" width="4" height="1" fill={color} />
@@ -530,15 +611,51 @@ export default function NetworkMap() {
                   ) : (
                     <circle cx="0" cy="0" r="1" fill={color} />
                   )}
+
+                  {/* BREACH status label */}
                   {isBreached && (
-                    <g transform="translate(-8, -4)">
-                      <rect x="-6" y="-2" width="12" height="3" rx="0.5" fill="#FF4444" opacity="0.8" />
-                      <text x="0" y="0" textAnchor="middle" fill="#fff" fontSize="1.5" fontWeight="bold">
-                        BREACH DETECTED
+                    <g transform="translate(0, -7)">
+                      <rect x="-7" y="-2" width="14" height="3.5" rx="0.5" fill="#FF4444" opacity="0.95" />
+                      <text x="0" y="0.8" textAnchor="middle" fill="#fff" fontSize="1.8" fontWeight="bold" style={{ pointerEvents: 'none' }}>
+                        ⚠ BREACH
                       </text>
                     </g>
                   )}
-                  <text y={isServer ? 8 : 6} textAnchor="middle" fill="#8B949E" fontSize="2.5" fontWeight="bold" style={{ pointerEvents: 'none' }}>
+
+                  {/* WARNING status label */}
+                  {isWarning && (
+                    <g transform="translate(0, -7)">
+                      <rect x="-8" y="-2" width="16" height="3.5" rx="0.5" fill="#926E00" opacity="0.95" />
+                      <text x="0" y="0.8" textAnchor="middle" fill="#FFD600" fontSize="1.8" fontWeight="bold" style={{ pointerEvents: 'none' }}>
+                        ! SUSPICIOUS
+                      </text>
+                    </g>
+                  )}
+
+                  {/* Trust score badge (IoT only) */}
+                  {!isServer && (
+                    <text
+                      y={isBreached || isWarning ? 6 : 5.5}
+                      textAnchor="middle"
+                      fill={color}
+                      fontSize="2"
+                      fontWeight="bold"
+                      opacity={0.85}
+                      style={{ pointerEvents: 'none' }}
+                    >
+                      {Math.round(node.trustScore)}
+                    </text>
+                  )}
+
+                  {/* Device name label */}
+                  <text
+                    y={isServer ? 8 : 8.5}
+                    textAnchor="middle"
+                    fill="#8B949E"
+                    fontSize="2.2"
+                    fontWeight="bold"
+                    style={{ pointerEvents: 'none' }}
+                  >
                     {node.label}
                   </text>
                 </g>

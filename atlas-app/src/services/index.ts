@@ -38,6 +38,7 @@ export const deviceService = {
     status?: string;
   }) => apiClient.patch(API_ENDPOINTS.devices.update(id), payload),
   deleteDevice: (id: string) => apiClient.delete(API_ENDPOINTS.devices.remove(id)),
+  resetTrustScore: (id: string) => apiClient.post(API_ENDPOINTS.devices.resetTrust(id)),
 };
 
 // ─── Trust ────────────────────────────────────────────────
