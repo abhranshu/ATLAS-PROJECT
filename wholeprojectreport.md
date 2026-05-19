@@ -150,3 +150,13 @@ However, its performance relies on the **`contamination`** parameter defined dur
 *   The model was trained on 10,000 synthetic IoT data points with a defined **contamination rate of 0.05 (5%)**.
 *   This configures the algorithm to expect that roughly 5% of all traffic on the network represents malicious or anomalous behavior (e.g. packet storms, weird protocols).
 *   **Evaluation Check**: During the sanity checks in the training pipeline, the model consistently assigns positive scores (normal behavior) to standard traffic and strictly negative scores (anomalies) to the simulated packet burst / high-entropy traffic, indicating a robust internal separation of normal vs. abnormal telemetry.
+
+
+
+
+
+
+
+1. ML Model used in the project (for detection): The project uses an Isolation Forest algorithm (an unsupervised machine learning model) to detect anomalies in IoT network telemetry. It is also paired with a SHAP TreeExplainer to provide Explainable AI (XAI) insights into why a specific device was flagged as anomalous.
+
+2. ML Model used for attacking the IoT devices: There is no ML model used to perform the attacks. Instead, the project uses statistical distribution generators (NumPy) to artificially simulate the behavior of attacks (like sudden packet bursts, high entropy, or unknown protocols) in the training data, which mimics traditional botnet malware like Mirai or BASHLITE.
