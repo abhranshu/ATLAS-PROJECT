@@ -2,15 +2,15 @@ import { useEffect, useState } from 'react';
 import Topbar from '../components/Topbar';
 import { incidentService } from '../services';
 import type { Incident } from '../types';
+import IncidentReportModal from '../components/IncidentReportModal';
 import '../components/Layout.css';
-
-
 
 export default function IncidentOverview() {
   const [incidents, setIncidents] = useState<Incident[]>([]);
   const [filter, setFilter] = useState<'all' | 'critical' | 'warning'>('all');
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [selectedIncident, setSelectedIncident] = useState<Incident | null>(null);
 
   useEffect(() => {
     incidentService.getIncidents({ limit: 20 })
@@ -27,9 +27,12 @@ export default function IncidentOverview() {
   const badgeClass = (s: string) =>
     s === 'critical' ? 'badge--critical' : s === 'warning' ? 'badge--warning' : 'badge--success';
 
+  const severityBorderColor = (s: string) =>
+    s === 'critical' ? '#FF4444' : s === 'warning' ? '#E3A008' : '#2EA043';
+
   return (
     <>
-      <Topbar title="Incident Overview" subtitle="Active + resolved events" />
+      <Topbar title="Incident Overview" subtitle="Active + resolved events — click any incident for a full report" />
       <div className="page-content">
         {/* Summary */}
         <div className="stat-grid">
@@ -63,6 +66,11 @@ export default function IncidentOverview() {
           ))}
         </div>
 
+        {/* Hint text */}
+        <p style={{ color: '#4A5568', fontSize: 11, margin: '4px 0 0 0' }}>
+          💡 Click on any incident card below to generate a detailed security report
+        </p>
+
         {/* Events List */}
         <div className="panel">
           {loading ? <div className="loading-state">Loading incidents…</div> : error ? (
@@ -73,16 +81,48 @@ export default function IncidentOverview() {
                 <div style={{ padding: 24, textAlign: 'center', color: '#8b949e' }}>No incidents found.</div>
               ) : (
                 displayed.map(inc => (
-                  <div key={inc.id} style={{ padding: '16px 20px', borderLeft: `3px solid ${inc.severity === 'critical' ? '#FF4444' : inc.severity === 'warning' ? '#E3A008' : '#2EA043'}`, borderBottom: '1px solid #30363D', cursor: 'pointer', transition: 'background 0.15s' }}
-                    onMouseEnter={e => (e.currentTarget.style.background = '#1c2128')}
-                    onMouseLeave={e => (e.currentTarget.style.background = 'transparent')}>
+                  <div
+                    key={inc.id}
+                    onClick={() => setSelectedIncident(inc)}
+                    style={{
+                      padding: '16px 20px',
+                      borderLeft: `3px solid ${severityBorderColor(inc.severity)}`,
+                      borderBottom: '1px solid #30363D',
+                      cursor: 'pointer',
+                      transition: 'background 0.15s',
+                      position: 'relative',
+                    }}
+                    onMouseEnter={e => {
+                      (e.currentTarget as HTMLDivElement).style.background = '#1c2128';
+                      const hint = (e.currentTarget as HTMLDivElement).querySelector('.report-hint') as HTMLElement;
+                      if (hint) hint.style.opacity = '1';
+                    }}
+                    onMouseLeave={e => {
+                      (e.currentTarget as HTMLDivElement).style.background = 'transparent';
+                      const hint = (e.currentTarget as HTMLDivElement).querySelector('.report-hint') as HTMLElement;
+                      if (hint) hint.style.opacity = '0';
+                    }}
+                  >
                     <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 6 }}>
                       <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
                         <span className={`badge ${badgeClass(inc.severity)}`}>{inc.type}</span>
                         {inc.resolved && <span className="badge badge--success">Resolved</span>}
-                        <span style={{ color: '#8B949E', fontSize: 10, fontFamily: 'monospace' }}>{inc.id}</span>
+                        <span style={{ color: '#8B949E', fontSize: 10, fontFamily: 'monospace' }}>{inc.id.slice(0, 16)}…</span>
                       </div>
-                      <span style={{ color: '#8B949E', fontSize: 11 }}>{inc.timestamp}</span>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+                        <span
+                          className="report-hint"
+                          style={{
+                            color: '#388bff', fontSize: 11, fontWeight: 600,
+                            opacity: 0, transition: 'opacity 0.2s',
+                          }}
+                        >
+                          📄 View Report →
+                        </span>
+                        <span style={{ color: '#8B949E', fontSize: 11 }}>
+                          {new Date(inc.timestamp).toLocaleString('en-IN', { dateStyle: 'short', timeStyle: 'short' })}
+                        </span>
+                      </div>
                     </div>
                     <h4 style={{ color: '#E6EDF3', fontSize: 14, fontWeight: 600, margin: '0 0 4px 0' }}>{inc.title}</h4>
                     <p style={{ color: '#8B949E', fontSize: 12, margin: 0 }}>{inc.description}</p>
@@ -96,6 +136,14 @@ export default function IncidentOverview() {
           )}
         </div>
       </div>
+
+      {/* Incident Report Modal */}
+      {selectedIncident && (
+        <IncidentReportModal
+          incident={selectedIncident}
+          onClose={() => setSelectedIncident(null)}
+        />
+      )}
     </>
   );
 }
