@@ -1,5 +1,8 @@
+import { useEffect, useState } from 'react';
 import { NavLink } from 'react-router-dom';
 import { LayoutDashboard, AlertTriangle, Activity, Database, Swords, Network } from 'lucide-react';
+import { dashboardService } from '../services';
+import type { DashboardOverview } from '../types';
 import './Sidebar.css';
 
 const navItems = [
@@ -11,6 +14,34 @@ const navItems = [
 ];
 
 export default function Sidebar() {
+  const [overview, setOverview] = useState<DashboardOverview | null>(null);
+
+  useEffect(() => {
+    const fetchOverview = () => {
+      dashboardService.getOverview()
+        .then(res => setOverview(res.data))
+        .catch(err => console.error("Failed to load telemetry for sidebar", err));
+    };
+    
+    fetchOverview();
+    
+    const intervalId = setInterval(fetchOverview, 8000);
+    const onRefresh = () => setTimeout(fetchOverview, 500);
+    
+    window.addEventListener('atlas-network-refresh', onRefresh);
+    window.addEventListener('atlas-cycle-status', onRefresh);
+    
+    return () => {
+      clearInterval(intervalId);
+      window.removeEventListener('atlas-network-refresh', onRefresh);
+      window.removeEventListener('atlas-cycle-status', onRefresh);
+    };
+  }, []);
+
+  const anomalyRate = overview 
+    ? (((overview.breachedDevices ?? 0) + (overview.warningDevices ?? 0)) / Math.max(overview.activeDevices ?? 1, 1) * 100).toFixed(1)
+    : "14.3";
+
   return (
     <aside className="sidebar">
       <div className="sidebar-header">
@@ -43,7 +74,11 @@ export default function Sidebar() {
               <span className="nav-icon">{item.icon}</span>
               <span>{item.label}</span>
             </div>
-            {item.badge && <span className="nav-badge">{item.badge}</span>}
+            {item.label === 'Alerts' ? (
+              <span className="nav-badge">{overview?.alerts ?? item.badge}</span>
+            ) : item.badge && (
+              <span className="nav-badge">{item.badge}</span>
+            )}
           </NavLink>
         ))}
       </nav>
@@ -52,23 +87,23 @@ export default function Sidebar() {
       <div className="telemetry-list">
         <div className="telemetry-row">
           <span className="tel-label">Active Devices</span>
-          <span className="tel-val text-blue">7</span>
+          <span className="tel-val text-blue">{overview?.activeDevices ?? 7}</span>
         </div>
         <div className="telemetry-row">
           <span className="tel-label">Trusted</span>
-          <span className="tel-val text-green">6</span>
+          <span className="tel-val text-green">{overview?.trustedDevices ?? 6}</span>
         </div>
         <div className="telemetry-row">
           <span className="tel-label">Anomaly Rate</span>
-          <span className="tel-val text-orange">14.3%</span>
+          <span className="tel-val text-orange">{overview ? anomalyRate + '%' : '14.3%'}</span>
         </div>
         <div className="telemetry-row">
           <span className="tel-label">Avg Trust</span>
-          <span className="tel-val">86.3</span>
+          <span className="tel-val">{overview?.avgTrustScore ?? 86.3}</span>
         </div>
         <div className="telemetry-row">
           <span className="tel-label">Cycles Run</span>
-          <span className="tel-val text-blue">4</span>
+          <span className="tel-val text-blue">{overview?.cyclesRun ?? 4}</span>
         </div>
       </div>
 

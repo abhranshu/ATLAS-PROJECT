@@ -42,6 +42,20 @@ export default function IncidentLogs() {
     .filter(l => levelFilter === 'ALL' || l.level === levelFilter)
     .filter(l => !search || l.message.toLowerCase().includes(search.toLowerCase()) || (l.device ?? '').toLowerCase().includes(search.toLowerCase()));
 
+  const handleClearLogs = async () => {
+    if (!window.confirm('Are you sure you want to clear all logs?')) return;
+    try {
+      setLoading(true);
+      await incidentService.clearLogs();
+      setLogs([]);
+    } catch (err) {
+      console.error('Failed to clear logs:', err);
+      alert('Failed to clear logs');
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <>
       <Topbar title="Incident Logs" subtitle="Full audit trail" />
@@ -57,6 +71,10 @@ export default function IncidentLogs() {
               {f}
             </button>
           ))}
+          <div style={{ flex: 1 }} />
+          <button onClick={handleClearLogs} style={{ padding: '6px 14px', borderRadius: 6, border: '1px solid #FF4444', fontSize: 11, fontWeight: 700, cursor: 'pointer', background: '#FF4444', color: 'white' }}>
+            Clear All Logs
+          </button>
         </div>
 
         {/* Log Table */}

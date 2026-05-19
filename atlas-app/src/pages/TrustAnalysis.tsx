@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from 'react';
 import Topbar from '../components/Topbar';
-import { trustService } from '../services';
+import { trustService, incidentService } from '../services';
 import '../components/Layout.css';
 
 interface TrustBreakdownItem {
@@ -66,6 +66,21 @@ export default function TrustAnalysis() {
 
   const avg = overview?.fleetAvgScore ?? 0;
 
+  const handleClearLogs = async () => {
+    if (!window.confirm('Are you sure you want to clear all logs?')) return;
+    try {
+      setLoading(true);
+      await incidentService.clearLogs();
+      alert('Logs cleared successfully');
+      fetchData();
+    } catch (err) {
+      console.error('Failed to clear logs:', err);
+      alert('Failed to clear logs');
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <>
       <Topbar title="Trust Analysis" subtitle="Fleet-wide trust overview" />
@@ -76,10 +91,17 @@ export default function TrustAnalysis() {
           </div>
         )}
 
-        {/* Live refresh indicator */}
-        <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: 8, fontSize: 11, color: '#4A5568', gap: 12 }}>
-          <span style={{ color: '#00E676' }}>● AUTO-REFRESH 8s</span>
-          <span>LAST UPDATE: {lastUpdate.toLocaleTimeString()}</span>
+        {/* Live refresh indicator & Actions */}
+        <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 8, alignItems: 'center' }}>
+          <div>
+            <button onClick={handleClearLogs} style={{ padding: '6px 14px', borderRadius: 6, border: '1px solid #30363D', fontSize: 11, fontWeight: 700, cursor: 'pointer', background: '#FF4444', color: 'white', display: 'flex', alignItems: 'center', gap: '6px' }}>
+              Clear All Logs
+            </button>
+          </div>
+          <div style={{ display: 'flex', fontSize: 11, color: '#4A5568', gap: 12 }}>
+            <span style={{ color: '#00E676' }}>● AUTO-REFRESH 8s</span>
+            <span>LAST UPDATE: {lastUpdate.toLocaleTimeString()}</span>
+          </div>
         </div>
 
         {/* Summary Cards */}

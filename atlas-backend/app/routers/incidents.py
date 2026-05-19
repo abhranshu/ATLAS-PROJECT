@@ -73,3 +73,8 @@ def get_incident(incident_id: str, _: dict = Depends(require_auth)):
         if i["id"] == incident_id:
             return i
     raise HTTPException(status_code=404, detail="Incident not found")
+
+@router.delete("/logs/clear")
+def clear_incident_logs(_: dict = Depends(require_auth)):
+    INCIDENTS.clear()
+    return {"status": "success", "message": "All logs cleared"}

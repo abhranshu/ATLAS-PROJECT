@@ -36,6 +36,7 @@ export const API_ENDPOINTS = {
     list: '/incidents',
     detail: (id: string) => `/incidents/${id}`,
     logs: '/incidents/logs',
+    clearLogs: '/incidents/logs/clear',
   },
   // Network
   network: {

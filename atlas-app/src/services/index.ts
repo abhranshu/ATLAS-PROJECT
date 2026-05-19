@@ -57,6 +57,7 @@ export const incidentService = {
   getIncident: (id: string) => apiClient.get(API_ENDPOINTS.incidents.detail(id)),
   getLogs: (params?: { page?: number; limit?: number }) =>
     apiClient.get(API_ENDPOINTS.incidents.logs, { params }),
+  clearLogs: () => apiClient.delete(API_ENDPOINTS.incidents.clearLogs),
 };
 
 // ─── Telemetry ────────────────────────────────────────────
