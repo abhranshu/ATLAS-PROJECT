@@ -10,7 +10,7 @@ from app.config import settings
 
 # ─── Engine ───────────────────────────────────────────────
 engine = create_engine(
-    settings.DATABASE_URL,
+    settings.database_url,
     pool_pre_ping=True,      # Reconnects if DB connection dropped
     pool_size=10,
     max_overflow=20,
